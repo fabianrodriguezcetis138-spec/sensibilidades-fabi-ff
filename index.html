@@ -69,7 +69,7 @@
     </div>
 
     <script type="module">
-        // --- BASE DE DATOS FINAL Y COMPLETA (OPPO A74 5G AÑADIDO) ---
+        // --- BASE DE DATOS FINAL Y COMPLETA (IPHONE 13 PRO MAX y 16 AÑADIDOS) ---
         const INITIAL_DATA = [
             // --- SAMSUNG GALAXY S21 ULTRA ---
             { base_model: "Samsung Galaxy S21 Ultra", model: "S21 Ultra (Sensibilidad ALTA)", dpi: 580, general: 100, red_dot: 98, scope_2x: 95, scope_4x: 90, button: 45, method: "CON DPI (Extrema/Competitiva)", note: "DPI muy alto para movimientos 360 y arrastre vertical rápido. Requiere buen control de recoil.", has_dpi: true, level: "ALTA" },
@@ -81,12 +81,17 @@
             { base_model: "Samsung Galaxy S23 Ultra", model: "S23 Ultra (Sensibilidad MEDIA)", dpi: 580, general: 94, red_dot: 90, scope_2x: 85, scope_4x: 80, button: 52, method: "CON DPI (Estable)", note: "Equilibrio ideal para jugabilidad pro.", has_dpi: true, level: "MEDIA" },
             { base_model: "Samsung Galaxy S23 Ultra", model: "S23 Ultra (Sensibilidad BAJA)", dpi: "Default (384)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 55, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Prioriza el control de miras largas.", has_dpi: false, level: "BAJA" },
 
+            // --- SAMSUNG GALAXY S23 ---
+            { base_model: "Samsung Galaxy S23", model: "S23 (Sensibilidad ALTA)", dpi: 700, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 50, method: "CON DPI (Rápida)", note: "DPI alto para maximizar la fluidez. Ideal para jugadores agresivos.", has_dpi: true, level: "ALTA" },
+            { base_model: "Samsung Galaxy S23", model: "S23 (Sensibilidad MEDIA)", dpi: 550, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 80, button: 52, method: "CON DPI (Equilibrada)", note: "Punto medio entre velocidad y control de recoil. Óptimo para rankear.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Samsung Galaxy S23", model: "S23 (Sensibilidad BAJA)", dpi: "Default (411)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 55, method: "SIN DPI (Fábrica)", note: "Usa el DPI de fábrica. Prioriza el control en rangos largos.", has_dpi: false, level: "BAJA" },
+
             // --- SAMSUNG GALAXY A54 ---
             { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad ALTA)", dpi: 650, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 50, method: "CON DPI (Rápida)", note: "Máxima respuesta para el A54.", has_dpi: true, level: "ALTA" },
             { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 85, scope_2x: 82, scope_4x: 75, button: 55, method: "CON DPI (Estándar)", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
             { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad BAJA)", dpi: "Default (384)", general: 95, red_dot: 90, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Comodidad)", note: "Ideal para jugar a 40 FPS.", has_dpi: false, level: "BAJA" },
             
-            // --- OPPO A74 5G (NUEVO) ---
+            // --- OPPO A74 5G ---
             { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad ALTA)", dpi: 750, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "CON DPI (Extrema/90Hz)", note: "Aprovecha la tasa de refresco de 90Hz. Velocidad máxima para 360s.", has_dpi: true, level: "ALTA" },
             { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad MEDIA)", dpi: 600, general: 93, red_dot: 89, scope_2x: 85, scope_4x: 77, button: 55, method: "CON DPI (Equilibrada)", note: "El punto dulce entre velocidad y control de recoil para el Snapdragon.", has_dpi: true, level: "MEDIA" },
             { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad BAJA)", dpi: "Default (411)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 58, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Prioriza el tiro preciso y la estabilidad de la mira.", has_dpi: false, level: "BAJA" },
@@ -117,12 +122,27 @@
             { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 73, button: 57, method: "CON DPI (Medio)", note: "Punto dulce para arrastre vertical suave.", has_dpi: true, level: "MEDIA" },
             { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad BAJA)", dpi: 500, general: 90, red_dot: 86, scope_2x: 80, scope_4x: 70, button: 57, method: "CON DPI (Baja)", note: "Conservador para evitar el lag.", has_dpi: true, level: "BAJA" },
 
-            // --- IPHONE 15 PRO MAX (ACTUALIZADO CURSOR DESLIZANTE) ---
+            // --- IPHONE 16 (ANTICIPADO) ---
+            { base_model: "iPhone 16", model: "iPhone 16 (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 99, scope_2x: 96, scope_4x: 94, button: 45, method: "Velocidad Cursor Deslizante", note: "Anticipado. Usar Cursor Deslizante a 120 (Refinado).", has_dpi: true, level: "ALTA" },
+            { base_model: "iPhone 16", model: "iPhone 16 (Sensibilidad MEDIA)", dpi: "105", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Anticipado. Usar Cursor Deslizante a 105.", has_dpi: true, level: "MEDIA" },
+            { base_model: "iPhone 16", model: "iPhone 16 (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "SIN DPI (Fábrica)", note: "Anticipado. Usar valor de fábrica (80) en Cursor Deslizante.", has_dpi: false, level: "BAJA" },
+
+            // --- IPHONE 15 PRO MAX ---
             { base_model: "iPhone 15 Pro Max", model: "15 Pro Max (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 99, scope_2x: 96, scope_4x: 94, button: 45, method: "Velocidad Cursor Deslizante", note: "Valor máximo (120) para giro rápido (Cursor Deslizante).", has_dpi: true, level: "ALTA" },
             { base_model: "iPhone 15 Pro Max", model: "15 Pro Max (Sensibilidad MEDIA)", dpi: "105", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Velocidad equilibrada (105) para Cursor Deslizante.", has_dpi: true, level: "MEDIA" },
             { base_model: "iPhone 15 Pro Max", model: "15 Pro Max (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante. Mayor control.", has_dpi: false, level: "BAJA" },
+            
+            // --- IPHONE 14 PRO MAX ---
+            { base_model: "iPhone 14 Pro Max", model: "14 Pro Max (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 99, scope_2x: 95, scope_4x: 90, button: 45, method: "Velocidad Cursor Deslizante", note: "Máxima fluidez. Configurar Cursor Deslizante a 120 (Refinado).", has_dpi: true, level: "ALTA" },
+            { base_model: "iPhone 14 Pro Max", model: "14 Pro Max (Sensibilidad MEDIA)", dpi: "110", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Equilibrio entre velocidad y precisión. Cursor Deslizante a 110.", has_dpi: true, level: "MEDIA" },
+            { base_model: "iPhone 14 Pro Max", model: "14 Pro Max (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante. Ideal para estabilidad.", has_dpi: false, level: "BAJA" },
+            
+            // --- IPHONE 13 PRO MAX (NUEVO) ---
+            { base_model: "iPhone 13 Pro Max", model: "13 Pro Max (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 98, scope_2x: 94, scope_4x: 89, button: 45, method: "Velocidad Cursor Deslizante", note: "Similar al 14 Pro Max. Máxima velocidad (120) para Cursor Deslizante.", has_dpi: true, level: "ALTA" },
+            { base_model: "iPhone 13 Pro Max", model: "13 Pro Max (Sensibilidad MEDIA)", dpi: "110", general: 97, red_dot: 94, scope_2x: 90, scope_4x: 85, button: 48, method: "Velocidad Cursor Deslizante", note: "Equilibrio. Velocidad de Cursor Deslizante a 110.", has_dpi: true, level: "MEDIA" },
+            { base_model: "iPhone 13 Pro Max", model: "13 Pro Max (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante para máxima estabilidad.", has_dpi: false, level: "BAJA" },
 
-            // --- IPHONE 11 (ACTUALIZADO CURSOR DESLIZANTE) ---
+            // --- IPHONE 11 ---
             { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 98, scope_2x: 95, scope_4x: 90, button: 45, method: "Velocidad Cursor Deslizante", note: "Máxima velocidad (120) de Cursor Deslizante y arrastre.", has_dpi: true, level: "ALTA" },
             { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad MEDIA)", dpi: "100", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Velocidad de Cursor Deslizante equilibrada (100).", has_dpi: true, level: "MEDIA" },
             { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 52, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante para estabilidad total.", has_dpi: false, level: "BAJA" },
@@ -168,7 +188,8 @@
         }
 
         window.renderResult = (config, container) => {
-            const isDefaultDPI = !config.has_dpi || config.dpi === 'N/A' || String(config.dpi).toLowerCase().includes('default');
+            // Lógica para determinar si usa DPI de fábrica o personalizado (aplica a Android y iOS con Default(80))
+            const isDefaultDPI = !config.has_dpi || String(config.dpi).toLowerCase().includes('default');
             const dpiColorClass = isDefaultDPI ? 'text-dpi-default' : 'text-dpi-custom';
             const levelClass = `level-${config.level || 'MEDIA'}`;
             
@@ -220,7 +241,7 @@
                 if (name.base_model.includes('iPhone')) return 'iPhone'; 
                 if (name.base_model.includes('Infinix')) return 'Infinix';
                 if (name.base_model.includes('Motorola')) return 'Motorola';
-                if (name.base_model.includes('Oppo')) return 'Oppo'; // <-- Añadido Oppo
+                if (name.base_model.includes('Oppo')) return 'Oppo'; 
                 return name.base_model.split(' ')[0]; 
             });
             // Ordenamos, eliminamos duplicados y colocamos las marcas más importantes arriba.
@@ -229,6 +250,8 @@
                 if (b === 'Xiaomi / Redmi / Poco') return 1;
                 if (a === 'Samsung Galaxy') return -1;
                 if (b === 'Samsung Galaxy') return 1;
+                if (a === 'iPhone') return -1; // Colocamos iPhone más arriba para accesibilidad
+                if (b === 'iPhone') return 1;
                 return a.localeCompare(b);
             });
         };
@@ -265,7 +288,7 @@
                  filteredByBrand = INITIAL_DATA.filter(item => 
                     item.base_model.includes('iPhone')
                 );
-            } else if (selectedBrand === 'Oppo') { // <-- Lógica de filtrado para Oppo
+            } else if (selectedBrand === 'Oppo') { 
                  filteredByBrand = INITIAL_DATA.filter(item => 
                     item.base_model.includes('Oppo')
                 );
