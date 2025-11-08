@@ -1,4 +1,4 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -22,13 +22,6 @@
         .card-result:hover {
             transform: translateY(-3px);
         }
-        .btn-search {
-            background-color: #e94560; /* Botón rojo de acento */
-            transition: background-color 0.2s;
-        }
-        .btn-search:hover {
-            background-color: #ff6a80;
-        }
         .text-dpi-custom { color: #facc15; /* yellow-400 */ }
         .text-dpi-default { color: #4ade80; /* green-400 */ }
 
@@ -36,9 +29,6 @@
         .level-ALTA { background-color: #f87171; /* red-400 */ color: #330000; }
         .level-MEDIA { background-color: #facc15; /* yellow-400 */ color: #332100; }
         .level-BAJA { background-color: #4ade80; /* green-400 */ color: #003300; }
-
-        /* Ocultar el Toggle ya que ahora mostramos todos los niveles */
-        .dpi-toggle-section { display: none; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -50,124 +40,118 @@
         </header>
 
         <section class="mb-8 p-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
-            <label for="brandInput" class="block text-lg font-semibold mb-3 text-pink-300">Ingresa el Modelo:</label>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch md:items-center">
-                <input 
-                    type="text" 
-                    id="brandInput" 
-                    placeholder="Ej: Redmi Note, Samsung S" 
+            <label class="block text-lg font-semibold mb-3 text-pink-300">Selecciona el Modelo:</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+                <select 
+                    id="brandSelect" 
+                    onchange="populateModels()" 
                     class="flex-grow p-3 rounded-lg bg-gray-900 border border-gray-700 focus:ring-red-400 focus:border-red-400 text-white"
-                    onkeydown="if(event.key === 'Enter') searchSensitivity()"
                 >
-                <input 
-                    type="text" 
-                    id="modelInput" 
-                    placeholder="Ej: 14 Pro, 21 Ultra, A05" 
-                    class="flex-grow p-3 rounded-lg bg-gray-900 border border-gray-700 focus:ring-red-400 focus:border-red-400 text-white"
-                    onkeydown="if(event.key === 'Enter') searchSensitivity()"
-                >
+                    <option value="">-- Selecciona la Marca --</option>
+                </select>
                 
-                <button 
-                    onclick="searchSensitivity()" 
-                    class="btn-search text-white font-bold py-3 px-6 rounded-lg hover:bg-pink-500 shadow-md whitespace-nowrap"
+                <select 
+                    id="modelSelect" 
+                    onchange="searchSensitivity()" 
+                    class="flex-grow p-3 rounded-lg bg-gray-900 border border-gray-700 focus:ring-red-400 focus:border-red-400 text-white"
+                    disabled
                 >
-                    Buscar 🔎
-                </button>
+                    <option value="">-- Selecciona el Modelo Específico --</option>
+                </select>
             </div>
-            <p class="text-xs text-gray-500 mt-2">Buscaremos la combinación de ambos campos (Ej: "Redmi Note 14 Pro").</p>
+            <p class="text-xs text-gray-500 mt-2">Al seleccionar el modelo específico, verás todas sus sensibilidades (Alta, Media, Baja).</p>
         </section>
         <section id="resultsContainer" class="mt-10">
             <div id="loadingMessage" class="p-6 bg-gray-800 rounded-lg text-center">
-                <p class="text-xl font-semibold text-blue-400 animate-pulse">Base de datos cargada. ¡A buscar! 🎯</p>
+                <p class="text-xl font-semibold text-blue-400 animate-pulse">Base de datos cargada. ¡A seleccionar! 🎯</p>
             </div>
         </section>
     </div>
 
     <script type="module">
-        // Importaciones de Firebase se mantienen por si se planea usar más adelante, pero no son estrictamente necesarias para la base local.
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        // Configuración de la base de datos y variables globales
-        setLogLevel('Debug');
-        const firebaseConfig = {}; // Configuración vacía si no se usa Firebase.
-
-        let db;
-        let auth;
-        let SENSITIVITY_DB = []; 
-        let isDataLoaded = false; 
-
-        // --- BASE DE DATOS FINAL Y COMPLETA ---
+        // --- BASE DE DATOS FINAL Y COMPLETA (TODOS CON ALTA, MEDIA, BAJA Y iPhone ACTUALIZADO) ---
         const INITIAL_DATA = [
-            // --- XIAOMI / REDMI: GAMING (15 Plus) ---
-            { base_model: "Redmi 15 Plus", model: "Redmi 15 Plus (Sensibilidad ALTA)", dpi: 750, general: 99, red_dot: 96, scope_2x: 93, scope_4x: 89, button: 45, method: "CON DPI (Extrema)", note: "Velocidad máxima para 144Hz. Muy sensible.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi 15 Plus", model: "Redmi 15 Plus (Sensibilidad MEDIA)", dpi: "Default (450)", general: 100, red_dot: 100, scope_2x: 95, scope_4x: 90, button: 50, method: "SIN DPI (Pro Player)", note: "Sensibilidad in-game máxima y DPI de fábrica.", has_dpi: false, level: "MEDIA" },
-
-            // --- SAMSUNG GALAXY S21 ULTRA (COMPLETO y CORREGIDO por DPI) ---
-            // DPI de fábrica reportado: 411
+            // --- SAMSUNG GALAXY S21 ULTRA ---
             { base_model: "Samsung Galaxy S21 Ultra", model: "S21 Ultra (Sensibilidad ALTA)", dpi: 580, general: 100, red_dot: 98, scope_2x: 95, scope_4x: 90, button: 45, method: "CON DPI (Extrema/Competitiva)", note: "DPI muy alto para movimientos 360 y arrastre vertical rápido. Requiere buen control de recoil.", has_dpi: true, level: "ALTA" },
             { base_model: "Samsung Galaxy S21 Ultra", model: "S21 Ultra (Sensibilidad MEDIA)", dpi: 480, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 50, method: "CON DPI (Equilibrada/Pro)", note: "Punto dulce entre velocidad y control. Ideal para la mayoría de los jugadores de alto nivel.", has_dpi: true, level: "MEDIA" },
             { base_model: "Samsung Galaxy S21 Ultra", model: "S21 Ultra (Sensibilidad BAJA)", dpi: "Default (411)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 55, method: "SIN DPI (Fábrica/Estable)", note: "Usa el DPI de fábrica. Prioriza la estabilidad y el control del recoil en distancias largas.", has_dpi: false, level: "BAJA" },
 
-            // --- XIAOMI / REDMI: GAMA ALTA / MEDIA ALTA (Note 14/13/12 Pro) ---
-            // --- Redmi Note 14 Pro (3 Niveles) ---
-            { base_model: "Redmi Note 14 Pro", model: "Redmi Note 14 Pro (Sensibilidad ALTA)", dpi: 680, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "CON DPI (Extrema)", note: "Aprovecha la pantalla 120Hz. Ideal para jugadores agresivos y 360s rápidos.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi Note 14 Pro", model: "Redmi Note 14 Pro (Sensibilidad MEDIA)", dpi: 520, general: 94, red_dot: 90, scope_2x: 85, scope_4x: 80, button: 50, method: "CON DPI (Estable)", note: "Mejor balance para tiro a la cabeza en distancias medias. Menor recoil.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi Note 14 Pro", model: "Redmi Note 14 Pro (Sensibilidad BAJA)", dpi: "Default (384)", general: 98, red_dot: 95, scope_2x: 90, scope_4x: 85, button: 52, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Compensado con alta sensibilidad in-game para control de recoil.", has_dpi: false, level: "BAJA" },
-            
-            // --- Redmi 14C (3 Niveles) ---
+            // --- SAMSUNG GALAXY S23 ULTRA ---
+            { base_model: "Samsung Galaxy S23 Ultra", model: "S23 Ultra (Sensibilidad ALTA)", dpi: 720, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 50, method: "CON DPI", note: "Alta fluidez y precisión, recomendado para 'Arrastre'.", has_dpi: true, level: "ALTA" },
+            { base_model: "Samsung Galaxy S23 Ultra", model: "S23 Ultra (Sensibilidad MEDIA)", dpi: 580, general: 94, red_dot: 90, scope_2x: 85, scope_4x: 80, button: 52, method: "CON DPI (Estable)", note: "Equilibrio ideal para jugabilidad pro.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Samsung Galaxy S23 Ultra", model: "S23 Ultra (Sensibilidad BAJA)", dpi: "Default (384)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 55, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Prioriza el control de miras largas.", has_dpi: false, level: "BAJA" },
+
+            // --- SAMSUNG GALAXY A54 ---
+            { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad ALTA)", dpi: 650, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 50, method: "CON DPI (Rápida)", note: "Máxima respuesta para el A54.", has_dpi: true, level: "ALTA" },
+            { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 85, scope_2x: 82, scope_4x: 75, button: 55, method: "CON DPI (Estándar)", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad BAJA)", dpi: "Default (384)", general: 95, red_dot: 90, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Comodidad)", note: "Ideal para jugar a 40 FPS.", has_dpi: false, level: "BAJA" },
+
+            // --- REDMI NOTE 14 PRO ---
+            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad ALTA)", dpi: 680, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "CON DPI (Extrema)", note: "Aprovecha la pantalla 120Hz. Ideal para jugadores agresivos y 360s rápidos.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad MEDIA)", dpi: 520, general: 94, red_dot: 90, scope_2x: 85, scope_4x: 80, button: 50, method: "CON DPI (Estable)", note: "Mejor balance para tiro a la cabeza en distancias medias. Menor recoil.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad BAJA)", dpi: "Default (384)", general: 98, red_dot: 95, scope_2x: 90, scope_4x: 85, button: 52, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Compensado con alta sensibilidad in-game para control de recoil.", has_dpi: false, level: "BAJA" },
+
+            // --- REDMI 14C ---
             { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad ALTA)", dpi: 600, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 82, button: 50, method: "CON DPI (Agresiva)", note: "DPI alto para maximizar la velocidad de giro en el Helio G81. Ideal para distancias cortas.", has_dpi: true, level: "ALTA" },
             { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 86, scope_2x: 82, scope_4x: 75, button: 55, method: "CON DPI (Equilibrada)", note: "Punto óptimo entre control y velocidad. Recomendado para la mayoría de jugadores.", has_dpi: true, level: "MEDIA" },
             { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad BAJA)", dpi: "Default (380)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 58, method: "SIN DPI (Estable)", note: "DPI de fábrica. Mayor estabilidad en tiro y control de recoil.", has_dpi: false, level: "BAJA" },
-            // --- Fin del Redmi 14C ---
-            
-            { base_model: "Redmi Note 13 Pro", model: "Redmi Note 13 Pro (Sensibilidad ALTA)", dpi: 620, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 82, button: 48, method: "CON DPI (Equilibrada Pro)", note: "Jugadores agresivos con buen control de recoil.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi Note 13 Pro", model: "Redmi Note 13 Pro (Sensibilidad MEDIA)", dpi: "Default (440)", general: 98, red_dot: 95, scope_2x: 91, scope_4x: 86, button: 52, method: "SIN DPI (Control)", note: "Prioriza precisión, usa DPI de fábrica.", has_dpi: false, level: "MEDIA" },
-            { base_model: "Redmi Note 13", model: "Redmi Note 13 (Sensibilidad MEDIA)", dpi: 560, general: 93, red_dot: 89, scope_2x: 85, scope_4x: 77, button: 53, method: "CON DPI (Media)", note: "Sensibilidad suave y rápida. Excelente para arrastre vertical.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi Note 13", model: "Redmi Note 13 (Sensibilidad BAJA)", dpi: "Default (400)", general: 95, red_dot: 91, scope_2x: 87, scope_4x: 80, button: 53, method: "SIN DPI (Estándar)", note: "DPI de fábrica. Configuración de juego equilibrada.", has_dpi: false, level: "BAJA" },
-            { base_model: "Redmi Note 12 Pro", model: "Redmi Note 12 Pro (Sensibilidad MEDIA)", dpi: 580, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 80, button: 50, method: "CON DPI (Equilibrada)", note: "Respuesta rápida para pantallas AMOLED.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi Note 12 Pro", model: "Redmi Note 12 Pro (Sensibilidad BAJA)", dpi: "Default (440)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 54, method: "SIN DPI (Segura)", note: "DPI de fábrica. Control en rangos medios.", has_dpi: false, level: "BAJA" },
 
-            // --- XIAOMI / REDMI: GAMA MEDIA (Note 11/10/12) ---
-            { base_model: "Redmi 12", model: "Redmi 12 (Sensibilidad ALTA)", dpi: 560, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 77, button: 52, method: "CON DPI (Rápida)", note: "Velocidad extrema para un arrastre rápido. Requiere control de recoil.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi 12", model: "Redmi 12 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 75, button: 55, method: "CON DPI (Equilibrada)", note: "El mejor punto medio entre velocidad y precisión.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi 12", model: "Redmi 12 (Sensibilidad BAJA)", dpi: "Default (395)", general: 96, red_dot: 91, scope_2x: 87, scope_4x: 80, button: 58, method: "SIN DPI (Estable)", note: "DPI de fábrica. Prioriza la estabilidad y el control de la mira.", has_dpi: false, level: "BAJA" },
-            { base_model: "Redmi Note 11", model: "Redmi Note 11 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 75, button: 55, method: "CON DPI (Medio)", note: "DPI equilibrado para rendimiento en AMOLED.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi Note 11", model: "Redmi Note 11 (Sensibilidad BAJA)", dpi: "Default (409)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Segura)", note: "DPI de fábrica. Botón ideal para agarre cómodo.", has_dpi: false, level: "BAJA" },
-            
-            // --- XIAOMI / REDMI: GAMA BASE / ANTIGUA (10, 9, 8, 13C) ---
+            // --- REDMI NOTE 11 (COMPLETADO) ---
+            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad ALTA)", dpi: 600, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "CON DPI (Rápida)", note: "Máxima respuesta y arrastre vertical.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 75, button: 55, method: "CON DPI (Medio)", note: "DPI equilibrado para rendimiento en AMOLED.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad BAJA)", dpi: "Default (409)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Segura)", note: "DPI de fábrica. Control en rangos medios.", has_dpi: false, level: "BAJA" },
+
+            // --- POCO X6 (COMPLETADO) ---
+            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad ALTA)", dpi: 630, general: 93, red_dot: 89, scope_2x: 84, scope_4x: 75, button: 45, method: "CON DPI (Competitiva)", note: "Ideal para jugadores que usan agarre de 4 dedos.", has_dpi: true, level: "ALTA" },
+            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad MEDIA)", dpi: 550, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 70, button: 46, method: "CON DPI", note: "Buen equilibrio entre velocidad y control.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad BAJA)", dpi: "Default (440)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 48, method: "SIN DPI (Estable)", note: "DPI de fábrica, prioriza la precisión.", has_dpi: false, level: "BAJA" },
+
+            // --- REDMI 10 (COMPLETADO) ---
+            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad ALTA)", dpi: 580, general: 93, red_dot: 89, scope_2x: 84, scope_4x: 75, button: 55, method: "CON DPI (Rápida)", note: "Rápida para maximizar el desempeño en este modelo.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 73, button: 57, method: "CON DPI (Medio)", note: "Punto dulce para arrastre vertical suave.", has_dpi: true, level: "MEDIA" },
             { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad BAJA)", dpi: 500, general: 90, red_dot: 86, scope_2x: 80, scope_4x: 70, button: 57, method: "CON DPI (Baja)", note: "Conservador para evitar el lag.", has_dpi: true, level: "BAJA" },
-            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad MEDIA)", dpi: "Default (395)", general: 93, red_dot: 89, scope_2x: 83, scope_4x: 75, button: 57, method: "SIN DPI (Control)", note: "Botón grande para mejor hit rate.", has_dpi: false, level: "MEDIA" },
-            { base_model: "Redmi 9", model: "Redmi 9 (Sensibilidad BAJA)", dpi: 480, general: 88, red_dot: 84, scope_2x: 78, scope_4x: 68, button: 58, method: "CON DPI (Estable)", note: "Bajo DPI. Ideal para asegurar estabilidad en dispositivos más antiguos.", has_dpi: true, level: "BAJA" },
-            
-            // --- POCO SERIES ---
-            { base_model: "Xiaomi Poco X6", model: "Xiaomi Poco X6 (Sensibilidad MEDIA)", dpi: 550, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 70, button: 46, method: "CON DPI", note: "Buen equilibrio entre velocidad y control.", has_dpi: true, level: "MEDIA" },
-            
-            // --- SAMSUNG GALAXY: GAMA ALTA / S SERIES (S23 Ultra) ---
-            { base_model: "Samsung Galaxy S23 Ultra", model: "Samsung Galaxy S23 Ultra (Sensibilidad ALTA)", dpi: 720, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 50, method: "CON DPI", note: "Alta fluidez y precisión, recomendado para 'Arrastre'.", has_dpi: true, level: "ALTA" },
-            
-            // --- SAMSUNG GALAXY: GAMA MEDIA (A Series) ---
-            { base_model: "Samsung Galaxy A54", model: "Samsung Galaxy A54 (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 85, scope_2x: 82, scope_4x: 75, button: 55, method: "CON DPI (Estándar)", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Samsung Galaxy A54", model: "Samsung Galaxy A54 (Sensibilidad BAJA)", dpi: "Default (384)", general: 95, red_dot: 90, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Comodidad)", note: "Ideal para jugar a 40 FPS.", has_dpi: false, level: "BAJA" },
-            
 
-            // --- APPLE IPHONE (TODAS LAS GENERACIONES) ---
-            { base_model: "iPhone 15 Pro Max", model: "iPhone 15 Pro Max (Sensibilidad ALTA)", dpi: "N/A", general: 100, red_dot: 99, scope_2x: 96, scope_4x: 94, button: 45, method: "SIN DPI (iOS)", note: "iOS: DPI no aplica. Sensibilidad al máximo por defecto.", has_dpi: false, level: "ALTA" },
-            { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad MEDIA)", dpi: "N/A", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "SIN DPI (iOS)", note: "Buena opción para iPhone 11/XR/SE (2da Gen).", has_dpi: false, level: "MEDIA" },
+            // --- IPHONE 15 PRO MAX (ACTUALIZADO CURSOR DESLIZANTE) ---
+            { base_model: "iPhone 15 Pro Max", model: "15 Pro Max (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 99, scope_2x: 96, scope_4x: 94, button: 45, method: "Velocidad Cursor Deslizante", note: "Valor máximo (120) para giro rápido (Cursor Deslizante).", has_dpi: true, level: "ALTA" },
+            { base_model: "iPhone 15 Pro Max", model: "15 Pro Max (Sensibilidad MEDIA)", dpi: "105", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Velocidad equilibrada (105) para Cursor Deslizante.", has_dpi: true, level: "MEDIA" },
+            { base_model: "iPhone 15 Pro Max", model: "15 Pro Max (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante. Mayor control.", has_dpi: false, level: "BAJA" },
+
+            // --- IPHONE 11 (ACTUALIZADO CURSOR DESLIZANTE) ---
+            { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 98, scope_2x: 95, scope_4x: 90, button: 45, method: "Velocidad Cursor Deslizante", note: "Máxima velocidad (120) de Cursor Deslizante y arrastre.", has_dpi: true, level: "ALTA" },
+            { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad MEDIA)", dpi: "100", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Velocidad de Cursor Deslizante equilibrada (100).", has_dpi: true, level: "MEDIA" },
+            { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 52, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante para estabilidad total.", has_dpi: false, level: "BAJA" },
+
+            // --- MOTOROLA EDGE 40 (COMPLETADO) ---
+            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad ALTA)", dpi: 700, general: 98, red_dot: 95, scope_2x: 90, scope_4x: 85, button: 48, method: "CON DPI (Extrema)", note: "DPI alto para aprovechar la pantalla fluida del Edge 40.", has_dpi: true, level: "ALTA" },
+            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad MEDIA)", dpi: 650, general: 96, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 52, method: "CON DPI", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad BAJA)", dpi: 550, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 75, button: 55, method: "CON DPI (Estable)", note: "DPI conservador para máximo control de recoil.", has_dpi: true, level: "BAJA" },
             
-            // --- OTROS FABRICANTES ---
-            // --- Infinix Smart 9 (3 Niveles) ---
+            // --- INFINIX SMART 9 (YA ESTABA COMPLETO) ---
             { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad ALTA)", dpi: 580, general: 93, red_dot: 88, scope_2x: 83, scope_4x: 75, button: 52, method: "CON DPI (Rápida)", note: "DPI alto para maximizar la velocidad de giro.", has_dpi: true, level: "ALTA" },
             { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 72, button: 55, method: "CON DPI (Medio)", note: "Punto dulce para arrastre y control en miras 2x.", has_dpi: true, level: "MEDIA" },
             { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad BAJA)", dpi: "Default (360)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 58, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Mayor estabilidad en tiro y control de recoil.", has_dpi: false, level: "BAJA" },
-            { base_model: "Motorola Edge 40", model: "Motorola Edge 40 (Sensibilidad MEDIA)", dpi: 650, general: 96, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 52, method: "CON DPI", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
+            
+            // --- OTROS REDMI (YA ESTABAN COMPLETOS O CASI) ---
+            { base_model: "Redmi 15 Plus", model: "Redmi 15 Plus (Sensibilidad ALTA)", dpi: 750, general: 99, red_dot: 96, scope_2x: 93, scope_4x: 89, button: 45, method: "CON DPI (Extrema)", note: "Velocidad máxima para 144Hz. Muy sensible.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi 15 Plus", model: "Redmi 15 Plus (Sensibilidad MEDIA)", dpi: "Default (450)", general: 100, red_dot: 100, scope_2x: 95, scope_4x: 90, button: 50, method: "SIN DPI (Pro Player)", note: "Sensibilidad in-game máxima y DPI de fábrica.", has_dpi: false, level: "MEDIA" },
+            { base_model: "Redmi Note 13 Pro", model: "Redmi Note 13 Pro (Sensibilidad ALTA)", dpi: 620, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 82, button: 48, method: "CON DPI (Equilibrada Pro)", note: "Jugadores agresivos con buen control de recoil.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi Note 13 Pro", model: "Redmi Note 13 Pro (Sensibilidad MEDIA)", dpi: "Default (440)", general: 98, red_dot: 95, scope_2x: 91, scope_4x: 86, button: 52, method: "SIN DPI (Control)", note: "Prioriza precisión, usa DPI de fábrica.", has_dpi: false, level: "MEDIA" },
+            { base_model: "Redmi Note 13 Pro", model: "Redmi Note 13 Pro (Sensibilidad BAJA)", dpi: 500, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 75, button: 55, method: "CON DPI (Baja)", note: "Bajo DPI para estabilidad extrema.", has_dpi: true, level: "BAJA" },
+            { base_model: "Redmi Note 13", model: "Redmi Note 13 (Sensibilidad ALTA)", dpi: 600, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 82, button: 50, method: "CON DPI (Rápida)", note: "Rápida para maximizar la velocidad de giro.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi Note 13", model: "Redmi Note 13 (Sensibilidad MEDIA)", dpi: 560, general: 93, red_dot: 89, scope_2x: 85, scope_4x: 77, button: 53, method: "CON DPI (Media)", note: "Sensibilidad suave y rápida. Excelente para arrastre vertical.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Redmi Note 13", model: "Redmi Note 13 (Sensibilidad BAJA)", dpi: "Default (400)", general: 95, red_dot: 91, scope_2x: 87, scope_4x: 80, button: 53, method: "SIN DPI (Estándar)", note: "DPI de fábrica. Configuración de juego equilibrada.", has_dpi: false, level: "BAJA" },
+            { base_model: "Redmi Note 12 Pro", model: "Redmi Note 12 Pro (Sensibilidad ALTA)", dpi: 620, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 48, method: "CON DPI (Rápida)", note: "Máxima respuesta para pantallas AMOLED.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi Note 12 Pro", model: "Redmi Note 12 Pro (Sensibilidad MEDIA)", dpi: 580, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 80, button: 50, method: "CON DPI (Equilibrada)", note: "Respuesta rápida para pantallas AMOLED.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Redmi Note 12 Pro", model: "Redmi Note 12 Pro (Sensibilidad BAJA)", dpi: "Default (440)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 54, method: "SIN DPI (Segura)", note: "DPI de fábrica. Control en rangos medios.", has_dpi: false, level: "BAJA" },
+            { base_model: "Redmi 12", model: "Redmi 12 (Sensibilidad ALTA)", dpi: 560, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 77, button: 52, method: "CON DPI (Rápida)", note: "Velocidad extrema para un arrastre rápido. Requiere control de recoil.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi 12", model: "Redmi 12 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 75, button: 55, method: "CON DPI (Equilibrada)", note: "El mejor punto medio entre velocidad y precisión.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Redmi 12", model: "Redmi 12 (Sensibilidad BAJA)", dpi: "Default (395)", general: 96, red_dot: 91, scope_2x: 87, scope_4x: 80, button: 58, method: "SIN DPI (Estable)", note: "DPI de fábrica. Prioriza la estabilidad y el control de la mira.", has_dpi: false, level: "BAJA" },
+
         ];
         // --- FIN DE BASE DE DATOS FINAL ---
 
 
-        // Función para renderizar una línea de sensibilidad
+        // --- FUNCIONES DE RENDERIZADO ---
         window.renderSensor = (label, value) => {
             return `
                 <div class="flex flex-col items-center p-2 bg-gray-900 rounded-md">
@@ -177,13 +161,16 @@
             `;
         }
 
-        // Función para renderizar una configuración individual
         window.renderResult = (config, container) => {
-            const isDefaultDPI = !config.has_dpi;
+            const isDefaultDPI = !config.has_dpi || config.dpi === 'N/A' || String(config.dpi).toLowerCase().includes('default');
             const dpiColorClass = isDefaultDPI ? 'text-dpi-default' : 'text-dpi-custom';
-            // Clases para el nivel de sensibilidad
             const levelClass = `level-${config.level || 'MEDIA'}`;
             
+            let dpiLabel = 'DPI (Ancho Más Pequeño):';
+            if (config.base_model.includes('iPhone')) {
+                dpiLabel = 'Cursor Deslizante (iOS):';
+            }
+
             const html = `
                 <div class="card-result p-6 rounded-xl space-y-4 mb-6">
                     <div class="flex justify-between items-center pb-2 border-b border-gray-700">
@@ -193,7 +180,7 @@
                     
                     <div class="grid grid-cols-2 gap-4 text-sm font-medium pt-3">
                         <div class="bg-gray-700/50 p-3 rounded-lg flex justify-between items-center">
-                            <span>DPI (Ancho Más Pequeño):</span>
+                            <span>${dpiLabel}</span>
                             <span class="text-lg font-bold ${dpiColorClass}">${config.dpi}</span>
                         </div>
                         <div class="bg-gray-700/50 p-3 rounded-lg flex justify-between items-center">
@@ -218,54 +205,107 @@
             container.insertAdjacentHTML('beforeend', html); 
         }
 
-        // LÓGICA PRINCIPAL DE BÚSQUEDA (CON DOBLE CAMPO)
-        window.searchSensitivity = () => {
-            const dbToUse = isDataLoaded ? SENSITIVITY_DB : INITIAL_DATA; 
+        // --- LÓGICA DE MENÚS DESPLEGABLES EN CASCADA ---
+
+        const extractBaseModels = (data) => {
+            const brands = data.map(name => {
+                if (name.base_model.includes('Redmi') || name.base_model.includes('Poco')) return 'Xiaomi / Redmi / Poco';
+                if (name.base_model.includes('Samsung Galaxy')) return 'Samsung Galaxy';
+                if (name.base_model.includes('iPhone')) return 'iPhone'; 
+                if (name.base_model.includes('Infinix')) return 'Infinix';
+                if (name.base_model.includes('Motorola')) return 'Motorola';
+                return name.base_model.split(' ')[0]; 
+            });
+            // Ordenamos, eliminamos duplicados y colocamos las marcas más importantes arriba.
+            return [...new Set(brands)].sort((a, b) => {
+                if (a === 'Xiaomi / Redmi / Poco') return -1;
+                if (b === 'Xiaomi / Redmi / Poco') return 1;
+                if (a === 'Samsung Galaxy') return -1;
+                if (b === 'Samsung Galaxy') return 1;
+                return a.localeCompare(b);
+            });
+        };
+
+        const initializeSelectors = () => {
+            const brandSelect = document.getElementById('brandSelect');
+            const brands = extractBaseModels(INITIAL_DATA); 
+
+            brands.forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand;
+                option.textContent = brand;
+                brandSelect.appendChild(option);
+            });
+        };
+
+        window.populateModels = () => {
+            const brandSelect = document.getElementById('brandSelect');
+            const modelSelect = document.getElementById('modelSelect');
+            const selectedBrand = brandSelect.value;
+
+            modelSelect.innerHTML = '<option value="">-- Selecciona el Modelo Específico --</option>';
+            modelSelect.disabled = true;
+
+            if (!selectedBrand) return;
+
+            // 1. Filtrar la base de datos por la marca seleccionada
+            let filteredByBrand;
+            if (selectedBrand === 'Xiaomi / Redmi / Poco') {
+                filteredByBrand = INITIAL_DATA.filter(item => 
+                    item.base_model.includes('Redmi') || item.base_model.includes('Poco')
+                );
+            } else if (selectedBrand === 'iPhone') {
+                 filteredByBrand = INITIAL_DATA.filter(item => 
+                    item.base_model.includes('iPhone')
+                );
+            } else {
+                filteredByBrand = INITIAL_DATA.filter(item => 
+                    item.base_model.includes(selectedBrand)
+                );
+            }
             
-            // 1. OBTENER Y COMBINAR AMBOS INPUTS
-            const brand = document.getElementById('brandInput').value.trim();
-            const model = document.getElementById('modelInput').value.trim();
+            // 2. Obtener modelos únicos dentro de esa marca y ordenarlos
+            const uniqueModels = [...new Set(filteredByBrand.map(item => item.base_model))].sort();
+
+            uniqueModels.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model;
+                option.textContent = model;
+                modelSelect.appendChild(option);
+            });
+
+            modelSelect.disabled = false;
+        };
+        
+        // LÓGICA PRINCIPAL DE BÚSQUEDA (LEE EL MENÚ DESPLEGABLE)
+        window.searchSensitivity = () => {
+            const dbToUse = INITIAL_DATA; 
+            const modelSelect = document.getElementById('modelSelect');
+            const input = modelSelect.value;
             const resultsContainer = document.getElementById('resultsContainer');
             
-            // Si ambos están vacíos, mostrar mensaje de error
-            if (brand.length < 1 && model.length < 1) { 
-                resultsContainer.innerHTML = `<p class="text-center text-yellow-400">Por favor, ingresa al menos la marca o el modelo.</p>`;
+            if (!input) { 
+                resultsContainer.innerHTML = `<p class="text-center text-yellow-400">Por favor, selecciona un modelo específico de la lista.</p>`;
                 return;
             }
-
-            // Combinamos la marca y el modelo, añadiendo un espacio si ambos existen
-            let fullQuery = (brand + ' ' + model).trim(); 
-            const input = fullQuery.toLowerCase();
 
             resultsContainer.innerHTML = ''; 
 
-            // 2. Encontrar coincidencias del modelo
-            const allMatches = dbToUse.filter(device => 
-                device.base_model.toLowerCase().includes(input) || 
-                device.model.toLowerCase().includes(input)
-            );
-
-            if (allMatches.length === 0) {
-                resultsContainer.innerHTML = `<div class="p-6 bg-gray-800 rounded-lg text-center">
-                                                <p class="text-xl font-semibold text-red-400">🚨 Modelo no encontrado 🚨</p>
-                                                <p class="mt-2 text-gray-400">Asegúrate de escribir el modelo principal (ej: "Redmi 14 Pro", "A05").</p>
-                                            </div>`;
-                return;
-            }
-
-            // 3. Usar el modelo base del primer match para obtener TODAS sus configuraciones
-            const targetBaseModel = allMatches[0].base_model; 
+            // El input es directamente el 'base_model' para filtrar
+            const targetBaseModel = input; 
             const relevantConfigs = dbToUse.filter(device => 
                 device.base_model === targetBaseModel
             );
             
-            // 4. Ordenar las configuraciones por nivel (ALTA, MEDIA, BAJA) antes de mostrar
+            // ... (Resto de la lógica de ordenamiento y renderizado)
+
+            // Ordenar las configuraciones por nivel (ALTA, MEDIA, BAJA) antes de mostrar
             const sortedConfigs = relevantConfigs.sort((a, b) => {
                 const order = { "ALTA": 1, "MEDIA": 2, "BAJA": 3 };
                 return (order[a.level] || 4) - (order[b.level] || 4);
             });
 
-            // 5. Renderizar los resultados
+            // Renderizar los resultados
             resultsContainer.innerHTML = ''; 
             resultsContainer.insertAdjacentHTML('afterbegin', `<h2 class="text-3xl font-extrabold text-white mb-6">Resultados para: <span class="text-pink-400">${targetBaseModel}</span></h2>`);
             
@@ -273,15 +313,20 @@
                 renderResult(config, resultsContainer);
             });
         }
+        
+        // Carga de la aplicación al iniciar la página
+        window.onload = initializeSelectors; 
 
-        // Se mantiene la lógica de inicialización (simplificada)
+        // Se mantienen las importaciones de Firebase por si se desea usar en el futuro
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        const firebaseConfig = {}; // Configuración vacía
         try {
             const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-        } catch (e) {
-            console.log("Firebase no inicializado (usando base de datos local):", e);
-        }
+        } catch (e) {}
+
     </script>
 </body>
 </html>
+
