@@ -69,7 +69,7 @@
     </div>
 
     <script type="module">
-        // --- BASE DE DATOS FINAL Y COMPLETA (TODOS CON ALTA, MEDIA, BAJA Y iPhone ACTUALIZADO) ---
+        // --- BASE DE DATOS FINAL Y COMPLETA (OPPO A74 5G AÑADIDO) ---
         const INITIAL_DATA = [
             // --- SAMSUNG GALAXY S21 ULTRA ---
             { base_model: "Samsung Galaxy S21 Ultra", model: "S21 Ultra (Sensibilidad ALTA)", dpi: 580, general: 100, red_dot: 98, scope_2x: 95, scope_4x: 90, button: 45, method: "CON DPI (Extrema/Competitiva)", note: "DPI muy alto para movimientos 360 y arrastre vertical rápido. Requiere buen control de recoil.", has_dpi: true, level: "ALTA" },
@@ -85,6 +85,12 @@
             { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad ALTA)", dpi: 650, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 50, method: "CON DPI (Rápida)", note: "Máxima respuesta para el A54.", has_dpi: true, level: "ALTA" },
             { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 85, scope_2x: 82, scope_4x: 75, button: 55, method: "CON DPI (Estándar)", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
             { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad BAJA)", dpi: "Default (384)", general: 95, red_dot: 90, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Comodidad)", note: "Ideal para jugar a 40 FPS.", has_dpi: false, level: "BAJA" },
+            
+            // --- OPPO A74 5G (NUEVO) ---
+            { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad ALTA)", dpi: 750, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "CON DPI (Extrema/90Hz)", note: "Aprovecha la tasa de refresco de 90Hz. Velocidad máxima para 360s.", has_dpi: true, level: "ALTA" },
+            { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad MEDIA)", dpi: 600, general: 93, red_dot: 89, scope_2x: 85, scope_4x: 77, button: 55, method: "CON DPI (Equilibrada)", note: "El punto dulce entre velocidad y control de recoil para el Snapdragon.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad BAJA)", dpi: "Default (411)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 58, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Prioriza el tiro preciso y la estabilidad de la mira.", has_dpi: false, level: "BAJA" },
+
 
             // --- REDMI NOTE 14 PRO ---
             { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad ALTA)", dpi: 680, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "CON DPI (Extrema)", note: "Aprovecha la pantalla 120Hz. Ideal para jugadores agresivos y 360s rápidos.", has_dpi: true, level: "ALTA" },
@@ -214,6 +220,7 @@
                 if (name.base_model.includes('iPhone')) return 'iPhone'; 
                 if (name.base_model.includes('Infinix')) return 'Infinix';
                 if (name.base_model.includes('Motorola')) return 'Motorola';
+                if (name.base_model.includes('Oppo')) return 'Oppo'; // <-- Añadido Oppo
                 return name.base_model.split(' ')[0]; 
             });
             // Ordenamos, eliminamos duplicados y colocamos las marcas más importantes arriba.
@@ -257,6 +264,10 @@
             } else if (selectedBrand === 'iPhone') {
                  filteredByBrand = INITIAL_DATA.filter(item => 
                     item.base_model.includes('iPhone')
+                );
+            } else if (selectedBrand === 'Oppo') { // <-- Lógica de filtrado para Oppo
+                 filteredByBrand = INITIAL_DATA.filter(item => 
+                    item.base_model.includes('Oppo')
                 );
             } else {
                 filteredByBrand = INITIAL_DATA.filter(item => 
@@ -329,4 +340,3 @@
     </script>
 </body>
 </html>
-
