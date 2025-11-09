@@ -69,7 +69,7 @@
     </div>
 
     <script type="module">
-        // --- BASE DE DATOS FINAL Y COMPLETA (XIAOMI REDMI 12S y VIVO V40 LITE AÑADIDOS) ---
+        // --- BASE DE DATOS FINAL Y COMPLETA (MOTOROLA E20 AÑADIDO) ---
         const INITIAL_DATA = [
             // --- SAMSUNG GALAXY S21 ULTRA ---
             { base_model: "Samsung Galaxy S21 Ultra", model: "S21 Ultra (Sensibilidad ALTA)", dpi: 580, general: 100, red_dot: 98, scope_2x: 95, scope_4x: 90, button: 45, method: "CON DPI (Extrema/Competitiva)", note: "DPI muy alto para movimientos 360 y arrastre vertical rápido. Requiere buen control de recoil.", has_dpi: true, level: "ALTA" },
@@ -91,7 +91,7 @@
             { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 85, scope_2x: 82, scope_4x: 75, button: 55, method: "CON DPI (Estándar)", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
             { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad BAJA)", dpi: "Default (384)", general: 95, red_dot: 90, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Comodidad)", note: "Ideal para jugar a 40 FPS.", has_dpi: false, level: "BAJA" },
             
-            // --- VIVO V40 LITE (NUEVO) ---
+            // --- VIVO V40 LITE ---
             { base_model: "Vivo V40 Lite", model: "V40 Lite (Sensibilidad ALTA)", dpi: 680, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 82, button: 50, method: "CON DPI (Rápida)", note: "DPI alto para aprovechar la fluidez de la pantalla. Ideal para arrastre rápido.", has_dpi: true, level: "ALTA" },
             { base_model: "Vivo V40 Lite", model: "V40 Lite (Sensibilidad MEDIA)", dpi: 550, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 78, button: 53, method: "CON DPI (Equilibrada)", note: "Punto medio óptimo para estabilidad y velocidad.", has_dpi: true, level: "MEDIA" },
             { base_model: "Vivo V40 Lite", model: "V40 Lite (Sensibilidad BAJA)", dpi: "Default (411)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 55, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Mayor estabilidad y control de recoil.", has_dpi: false, level: "BAJA" },
@@ -101,36 +101,21 @@
             { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad MEDIA)", dpi: 600, general: 93, red_dot: 89, scope_2x: 85, scope_4x: 77, button: 55, method: "CON DPI (Equilibrada)", note: "El punto dulce entre velocidad y control de recoil para el Snapdragon.", has_dpi: true, level: "MEDIA" },
             { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad BAJA)", dpi: "Default (411)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 58, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Prioriza el tiro preciso y la estabilidad de la mira.", has_dpi: false, level: "BAJA" },
 
-            // --- REDMI NOTE 14 PRO ---
-            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad ALTA)", dpi: 680, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "CON DPI (Extrema)", note: "Aprovecha la pantalla 120Hz. Ideal para jugadores agresivos y 360s rápidos.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad MEDIA)", dpi: 520, general: 94, red_dot: 90, scope_2x: 85, scope_4x: 80, button: 50, method: "CON DPI (Estable)", note: "Mejor balance para tiro a la cabeza en distancias medias. Menor recoil.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad BAJA)", dpi: "Default (384)", general: 98, red_dot: 95, scope_2x: 90, scope_4x: 85, button: 52, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Compensado con alta sensibilidad in-game para control de recoil.", has_dpi: false, level: "BAJA" },
-
-            // --- XIAOMI REDMI 12S (NUEVO) ---
-            { base_model: "Xiaomi Redmi 12S", model: "12S (Sensibilidad ALTA)", dpi: 650, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 82, button: 50, method: "CON DPI (Rápida)", note: "DPI alto para maximizar la respuesta y el arrastre vertical.", has_dpi: true, level: "ALTA" },
-            { base_model: "Xiaomi Redmi 12S", model: "12S (Sensibilidad MEDIA)", dpi: 520, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 77, button: 54, method: "CON DPI (Equilibrada)", note: "Punto dulce para un juego rápido y controlable.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Xiaomi Redmi 12S", model: "12S (Sensibilidad BAJA)", dpi: "Default (392)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 56, method: "SIN DPI (Fábrica)", note: "Usa DPI de fábrica. Prioriza la estabilidad y el control de la mira en distancias largas.", has_dpi: false, level: "BAJA" },
-
-            // --- REDMI 14C ---
-            { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad ALTA)", dpi: 600, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 82, button: 50, method: "CON DPI (Agresiva)", note: "DPI alto para maximizar la velocidad de giro en el Helio G81. Ideal para distancias cortas.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 86, scope_2x: 82, scope_4x: 75, button: 55, method: "CON DPI (Equilibrada)", note: "Punto óptimo entre control y velocidad. Recomendado para la mayoría de jugadores.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad BAJA)", dpi: "Default (380)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 58, method: "SIN DPI (Estable)", note: "DPI de fábrica. Mayor estabilidad en tiro y control de recoil.", has_dpi: false, level: "BAJA" },
-
-            // --- REDMI NOTE 11 (COMPLETADO) ---
-            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad ALTA)", dpi: 600, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "CON DPI (Rápida)", note: "Máxima respuesta y arrastre vertical.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 75, button: 55, method: "CON DPI (Medio)", note: "DPI equilibrado para rendimiento en AMOLED.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad BAJA)", dpi: "Default (409)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Segura)", note: "DPI de fábrica. Control en rangos medios.", has_dpi: false, level: "BAJA" },
-
-            // --- POCO X6 (COMPLETADO) ---
-            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad ALTA)", dpi: 630, general: 93, red_dot: 89, scope_2x: 84, scope_4x: 75, button: 45, method: "CON DPI (Competitiva)", note: "Ideal para jugadores que usan agarre de 4 dedos.", has_dpi: true, level: "ALTA" },
-            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad MEDIA)", dpi: 550, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 70, button: 46, method: "CON DPI", note: "Buen equilibrio entre velocidad y control.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad BAJA)", dpi: "Default (440)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 48, method: "SIN DPI (Estable)", note: "DPI de fábrica, prioriza la precisión.", has_dpi: false, level: "BAJA" },
-
-            // --- REDMI 10 (COMPLETADO) ---
-            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad ALTA)", dpi: 580, general: 93, red_dot: 89, scope_2x: 84, scope_4x: 75, button: 55, method: "CON DPI (Rápida)", note: "Rápida para maximizar el desempeño en este modelo.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 73, button: 57, method: "CON DPI (Medio)", note: "Punto dulce para arrastre vertical suave.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad BAJA)", dpi: 500, general: 90, red_dot: 86, scope_2x: 80, scope_4x: 70, button: 57, method: "CON DPI (Baja)", note: "Conservador para evitar el lag.", has_dpi: true, level: "BAJA" },
-
+            // --- MOTOROLA EDGE 40 (COMPLETADO) ---
+            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad ALTA)", dpi: 700, general: 98, red_dot: 95, scope_2x: 90, scope_4x: 85, button: 48, method: "CON DPI (Extrema)", note: "DPI alto para aprovechar la pantalla fluida del Edge 40.", has_dpi: true, level: "ALTA" },
+            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad MEDIA)", dpi: 650, general: 96, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 52, method: "CON DPI", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad BAJA)", dpi: 550, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 75, button: 55, method: "CON DPI (Estable)", note: "DPI conservador para máximo control de recoil.", has_dpi: true, level: "BAJA" },
+            
+            // --- MOTOROLA E20 (NUEVO) ---
+            { base_model: "Motorola E20", model: "E20 (Sensibilidad ALTA)", dpi: 580, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 55, method: "CON DPI (Rápida)", note: "DPI alto para compensar la pantalla HD+. Ideal para arrastre vertical.", has_dpi: true, level: "ALTA" },
+            { base_model: "Motorola E20", model: "E20 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 75, button: 58, method: "CON DPI (Equilibrada)", note: "El punto dulce entre velocidad y precisión para su procesador.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Motorola E20", model: "E20 (Sensibilidad BAJA)", dpi: "Default (384)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 60, method: "SIN DPI (Fábrica)", note: "Usa DPI de fábrica. Prioriza la estabilidad y el tiro a larga distancia.", has_dpi: false, level: "BAJA" },
+            
+            // --- INFINIX SMART 9 (YA ESTABA COMPLETO) ---
+            { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad ALTA)", dpi: 580, general: 93, red_dot: 88, scope_2x: 83, scope_4x: 75, button: 52, method: "CON DPI (Rápida)", note: "DPI alto para maximizar la velocidad de giro.", has_dpi: true, level: "ALTA" },
+            { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 72, button: 55, method: "CON DPI (Medio)", note: "Punto dulce para arrastre y control en miras 2x.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad BAJA)", dpi: "Default (360)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 58, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Mayor estabilidad en tiro y control de recoil.", has_dpi: false, level: "BAJA" },
+            
             // --- IPHONE 16 (ANTICIPADO) ---
             { base_model: "iPhone 16", model: "iPhone 16 (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 99, scope_2x: 96, scope_4x: 94, button: 45, method: "Velocidad Cursor Deslizante", note: "Anticipado. Usar Cursor Deslizante a 120 (Refinado).", has_dpi: true, level: "ALTA" },
             { base_model: "iPhone 16", model: "iPhone 16 (Sensibilidad MEDIA)", dpi: "105", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Anticipado. Usar Cursor Deslizante a 105.", has_dpi: true, level: "MEDIA" },
@@ -155,18 +140,26 @@
             { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 98, scope_2x: 95, scope_4x: 90, button: 45, method: "Velocidad Cursor Deslizante", note: "Máxima velocidad (120) de Cursor Deslizante y arrastre.", has_dpi: true, level: "ALTA" },
             { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad MEDIA)", dpi: "100", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Velocidad de Cursor Deslizante equilibrada (100).", has_dpi: true, level: "MEDIA" },
             { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 52, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante para estabilidad total.", has_dpi: false, level: "BAJA" },
-
-            // --- MOTOROLA EDGE 40 (COMPLETADO) ---
-            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad ALTA)", dpi: 700, general: 98, red_dot: 95, scope_2x: 90, scope_4x: 85, button: 48, method: "CON DPI (Extrema)", note: "DPI alto para aprovechar la pantalla fluida del Edge 40.", has_dpi: true, level: "ALTA" },
-            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad MEDIA)", dpi: 650, general: 96, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 52, method: "CON DPI", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad BAJA)", dpi: 550, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 75, button: 55, method: "CON DPI (Estable)", note: "DPI conservador para máximo control de recoil.", has_dpi: true, level: "BAJA" },
             
-            // --- INFINIX SMART 9 (YA ESTABA COMPLETO) ---
-            { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad ALTA)", dpi: 580, general: 93, red_dot: 88, scope_2x: 83, scope_4x: 75, button: 52, method: "CON DPI (Rápida)", note: "DPI alto para maximizar la velocidad de giro.", has_dpi: true, level: "ALTA" },
-            { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 72, button: 55, method: "CON DPI (Medio)", note: "Punto dulce para arrastre y control en miras 2x.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad BAJA)", dpi: "Default (360)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 58, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Mayor estabilidad en tiro y control de recoil.", has_dpi: false, level: "BAJA" },
-            
-            // --- OTROS REDMI/POCO ---
+            // --- XIAOMI/REDMI/POCO ---
+            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad ALTA)", dpi: 680, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "CON DPI (Extrema)", note: "Aprovecha la pantalla 120Hz. Ideal para jugadores agresivos y 360s rápidos.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad MEDIA)", dpi: 520, general: 94, red_dot: 90, scope_2x: 85, scope_4x: 80, button: 50, method: "CON DPI (Estable)", note: "Mejor balance para tiro a la cabeza en distancias medias. Menor recoil.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad BAJA)", dpi: "Default (384)", general: 98, red_dot: 95, scope_2x: 90, scope_4x: 85, button: 52, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Compensado con alta sensibilidad in-game para control de recoil.", has_dpi: false, level: "BAJA" },
+            { base_model: "Xiaomi Redmi 12S", model: "12S (Sensibilidad ALTA)", dpi: 650, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 82, button: 50, method: "CON DPI (Rápida)", note: "DPI alto para maximizar la respuesta y el arrastre vertical.", has_dpi: true, level: "ALTA" },
+            { base_model: "Xiaomi Redmi 12S", model: "12S (Sensibilidad MEDIA)", dpi: 520, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 77, button: 54, method: "CON DPI (Equilibrada)", note: "Punto dulce para un juego rápido y controlable.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Xiaomi Redmi 12S", model: "12S (Sensibilidad BAJA)", dpi: "Default (392)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 56, method: "SIN DPI (Fábrica)", note: "Usa DPI de fábrica. Prioriza la estabilidad y el control de la mira en distancias largas.", has_dpi: false, level: "BAJA" },
+            { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad ALTA)", dpi: 600, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 82, button: 50, method: "CON DPI (Agresiva)", note: "DPI alto para maximizar la velocidad de giro en el Helio G81. Ideal para distancias cortas.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 86, scope_2x: 82, scope_4x: 75, button: 55, method: "CON DPI (Equilibrada)", note: "Punto óptimo entre control y velocidad. Recomendado para la mayoría de jugadores.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad BAJA)", dpi: "Default (380)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 58, method: "SIN DPI (Estable)", note: "DPI de fábrica. Mayor estabilidad en tiro y control de recoil.", has_dpi: false, level: "BAJA" },
+            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad ALTA)", dpi: 600, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "CON DPI (Rápida)", note: "Máxima respuesta y arrastre vertical.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 75, button: 55, method: "CON DPI (Medio)", note: "DPI equilibrado para rendimiento en AMOLED.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad BAJA)", dpi: "Default (409)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Segura)", note: "DPI de fábrica. Control en rangos medios.", has_dpi: false, level: "BAJA" },
+            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad ALTA)", dpi: 630, general: 93, red_dot: 89, scope_2x: 84, scope_4x: 75, button: 45, method: "CON DPI (Competitiva)", note: "Ideal para jugadores que usan agarre de 4 dedos.", has_dpi: true, level: "ALTA" },
+            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad MEDIA)", dpi: 550, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 70, button: 46, method: "CON DPI", note: "Buen equilibrio entre velocidad y control.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad BAJA)", dpi: "Default (440)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 48, method: "SIN DPI (Estable)", note: "DPI de fábrica, prioriza la precisión.", has_dpi: false, level: "BAJA" },
+            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad ALTA)", dpi: 580, general: 93, red_dot: 89, scope_2x: 84, scope_4x: 75, button: 55, method: "CON DPI (Rápida)", note: "Rápida para maximizar el desempeño en este modelo.", has_dpi: true, level: "ALTA" },
+            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 73, button: 57, method: "CON DPI (Medio)", note: "Punto dulce para arrastre vertical suave.", has_dpi: true, level: "MEDIA" },
+            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad BAJA)", dpi: 500, general: 90, red_dot: 86, scope_2x: 80, scope_4x: 70, button: 57, method: "CON DPI (Baja)", note: "Conservador para evitar el lag.", has_dpi: true, level: "BAJA" },
             { base_model: "Redmi 15 Plus", model: "Redmi 15 Plus (Sensibilidad ALTA)", dpi: 750, general: 99, red_dot: 96, scope_2x: 93, scope_4x: 89, button: 45, method: "CON DPI (Extrema)", note: "Velocidad máxima para 144Hz. Muy sensible.", has_dpi: true, level: "ALTA" },
             { base_model: "Redmi 15 Plus", model: "Redmi 15 Plus (Sensibilidad MEDIA)", dpi: "Default (450)", general: 100, red_dot: 100, scope_2x: 95, scope_4x: 90, button: 50, method: "SIN DPI (Pro Player)", note: "Sensibilidad in-game máxima y DPI de fábrica.", has_dpi: false, level: "MEDIA" },
             { base_model: "Redmi Note 13 Pro", model: "Redmi Note 13 Pro (Sensibilidad ALTA)", dpi: 620, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 82, button: 48, method: "CON DPI (Equilibrada Pro)", note: "Jugadores agresivos con buen control de recoil.", has_dpi: true, level: "ALTA" },
