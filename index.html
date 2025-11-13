@@ -29,6 +29,9 @@
         .level-ALTA { background-color: #f87171; /* red-400 */ color: #330000; }
         .level-MEDIA { background-color: #facc15; /* yellow-400 */ color: #332100; }
         .level-BAJA { background-color: #4ade80; /* green-400 */ color: #003300; }
+        /* Nuevos niveles para los resultados dinámicos */
+        .level-DINAMICA_ESTABLE { background-color: #10b981; /* emerald-500 */ color: #000000; }
+        .level-DINAMICA_COMPETITIVA { background-color: #ef4444; /* red-500 */ color: #000000; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -39,7 +42,7 @@
             <p class="text-lg text-gray-300">Encuentra la configuración ideal para dar "Todo Rojo" en tu dispositivo.</p>
         </header>
 
-        <section class="mb-8 p-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
+        <section class="mb-6 p-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
             <label class="block text-lg font-semibold mb-3 text-pink-300">Selecciona el Modelo:</label>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
                 <select 
@@ -59,17 +62,42 @@
                     <option value="">-- Selecciona el Modelo Específico --</option>
                 </select>
             </div>
-            <p class="text-xs text-gray-500 mt-2">Al seleccionar el modelo específico, verás todas sus sensibilidades (Alta, Media, Baja).</p>
+            <p class="text-xs text-gray-500 mt-2">Al seleccionar el modelo se muestran las 3 configuraciones fijas (Alta, Media, Baja) de la base de datos.</p>
+        </section>
+        <section class="mb-8 p-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700 text-center">
+            <label class="block text-lg font-semibold mb-3 text-red-300">Generador de Sensibilidad Dinámica (Max 200):</label>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button 
+                    id="stableGenerateButton"
+                    onclick="generateStableSensitivity()" 
+                    class="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition duration-200 disabled:bg-gray-500"
+                    disabled
+                >
+                    ✨ Generar Configuración SIN DPI
+                </button>
+                
+                <button 
+                    id="randomGenerateButton"
+                    onclick="generateDpiSensitivity()" 
+                    class="w-full px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition duration-200 disabled:bg-gray-500"
+                    disabled
+                >
+                    🔥 Generar Configuración CON DPI
+                </button>
+            </div>
+
+            <p class="text-xs text-gray-500 mt-2">Cada botón genera una configuración de sensibilidad **aleatoria y diferente** según el modo (Estable/Competitivo).</p>
         </section>
         <section id="resultsContainer" class="mt-10">
             <div id="loadingMessage" class="p-6 bg-gray-800 rounded-lg text-center">
-                <p class="text-xl font-semibold text-blue-400 animate-pulse">Base de datos cargada. ¡A seleccionar! 🎯</p>
+                <p class="text-xl font-semibold text-blue-400 animate-pulse">Base de datos cargada. ¡A seleccionar y generar! 🎯</p>
             </div>
         </section>
     </div>
 
     <script type="module">
-        // --- BASE DE DATOS FINAL Y COMPLETA (MOTOROLA E20 AÑADIDO) ---
+        // --- BASE DE DATOS FINAL Y COMPLETA (Se mantiene la DB intacta) ---
         const INITIAL_DATA = [
             // --- SAMSUNG GALAXY S21 ULTRA ---
             { base_model: "Samsung Galaxy S21 Ultra", model: "S21 Ultra (Sensibilidad ALTA)", dpi: 580, general: 100, red_dot: 98, scope_2x: 95, scope_4x: 90, button: 45, method: "CON DPI (Extrema/Competitiva)", note: "DPI muy alto para movimientos 360 y arrastre vertical rápido. Requiere buen control de recoil.", has_dpi: true, level: "ALTA" },
@@ -178,32 +206,45 @@
         // --- FIN DE BASE DE DATOS FINAL ---
 
 
-        // --- FUNCIONES DE RENDERIZADO ---
+        // --- FUNCIONES DE RENDERIZADO Y LÓGICA ---
+        
+        /** Genera un número entero aleatorio en un rango dado. */
+        const getRandomInt = (min, max) => {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
         window.renderSensor = (label, value) => {
+            // Si el valor es mayor a 100, usamos un color diferente para destacar que supera el estándar (hasta 200).
+            const displayValue = value > 100 ? `<span class="text-yellow-400">${value}%</span>` : `${value}%`;
             return `
                 <div class="flex flex-col items-center p-2 bg-gray-900 rounded-md">
                     <span class="text-pink-300 font-semibold">${label}</span>
-                    <span class="text-xl font-extrabold">${value}%</span>
+                    <span class="text-xl font-extrabold">${displayValue}</span>
                 </div>
             `;
         }
 
         window.renderResult = (config, container) => {
-            // Lógica para determinar si usa DPI de fábrica o personalizado (aplica a Android y iOS con Default(80))
             const isDefaultDPI = !config.has_dpi || String(config.dpi).toLowerCase().includes('default');
             const dpiColorClass = isDefaultDPI ? 'text-dpi-default' : 'text-dpi-custom';
-            const levelClass = `level-${config.level || 'MEDIA'}`;
+            
+            // Usar el nivel de la configuración para la clase CSS (Alta, Baja, Dinámica)
+            const levelClass = `level-${config.level || 'DINAMICA'}`;
             
             let dpiLabel = 'DPI (Ancho Más Pequeño):';
             if (config.base_model.includes('iPhone')) {
                 dpiLabel = 'Cursor Deslizante (iOS):';
             }
+            
+            // Aseguramos que el LEVEL se muestre con el título correcto
+            const levelDisplay = config.level.startsWith('DINAMICA') ? 'GENERADA' : config.level.toUpperCase();
+
 
             const html = `
                 <div class="card-result p-6 rounded-xl space-y-4 mb-6">
                     <div class="flex justify-between items-center pb-2 border-b border-gray-700">
                         <h2 class="text-2xl font-extrabold text-pink-300">${config.model}</h2>
-                        <span class="px-3 py-1 rounded-full text-sm font-bold shadow-md ${levelClass}">NIVEL ${config.level || 'MEDIA'}</span>
+                        <span class="px-3 py-1 rounded-full text-sm font-bold shadow-md ${levelClass}">${levelDisplay}</span>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4 text-sm font-medium pt-3">
@@ -218,7 +259,7 @@
                     </div>
 
                     <div class="bg-gray-700/50 p-4 rounded-lg">
-                        <h3 class="text-lg font-bold mb-2 text-red-400">SENSIBILIDAD IN-GAME</h3>
+                        <h3 class="text-lg font-bold mb-2 text-red-400">SENSIBILIDAD IN-GAME (Max 200)</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                             ${renderSensor('General', config.general)}
                             ${renderSensor('Punto Rojo', config.red_dot)}
@@ -232,9 +273,14 @@
             `;
             container.insertAdjacentHTML('beforeend', html); 
         }
+        
+        // --- FUNCIÓN DE CONTROL DE BOTÓN (Habilitar/Deshabilitar) ---
+        window.toggleRandomButton = (baseModel) => {
+            document.getElementById('randomGenerateButton').disabled = !baseModel;
+            document.getElementById('stableGenerateButton').disabled = !baseModel;
+        }
 
-        // --- LÓGICA DE MENÚS DESPLEGABLES EN CASCADA ---
-
+        // --- LÓGICA DE MENÚS DESPLEGABLES EN CASCADA (Se mantiene) ---
         const extractBaseModels = (data) => {
             const brands = data.map(name => {
                 if (name.base_model.includes('Redmi') || name.base_model.includes('Poco') || name.base_model.includes('Xiaomi')) return 'Xiaomi / Redmi / Poco';
@@ -252,7 +298,7 @@
                 if (b === 'Xiaomi / Redmi / Poco') return 1;
                 if (a === 'Samsung Galaxy') return -1;
                 if (b === 'Samsung Galaxy') return 1;
-                if (a === 'iPhone') return -1; // Colocamos iPhone más arriba para accesibilidad
+                if (a === 'iPhone') return -1; 
                 if (b === 'iPhone') return 1;
                 return a.localeCompare(b);
             });
@@ -277,10 +323,11 @@
 
             modelSelect.innerHTML = '<option value="">-- Selecciona el Modelo Específico --</option>';
             modelSelect.disabled = true;
+            toggleRandomButton(false); 
 
             if (!selectedBrand) return;
 
-            // 1. Filtrar la base de datos por la marca seleccionada
+            // Lógica de filtrado
             let filteredByBrand;
             if (selectedBrand === 'Xiaomi / Redmi / Poco') {
                 filteredByBrand = INITIAL_DATA.filter(item => 
@@ -304,7 +351,6 @@
                 );
             }
             
-            // 2. Obtener modelos únicos dentro de esa marca y ordenarlos
             const uniqueModels = [...new Set(filteredByBrand.map(item => item.base_model))].sort();
 
             uniqueModels.forEach(model => {
@@ -317,27 +363,29 @@
             modelSelect.disabled = false;
         };
         
-        // LÓGICA PRINCIPAL DE BÚSQUEDA (LEE EL MENÚ DESPLEGABLE)
+        // --- FUNCIÓN QUE MUESTRA LAS 3 CONFIGURACIONES FIJAS (Llamada desde el Select) ---
         window.searchSensitivity = () => {
-            const dbToUse = INITIAL_DATA; 
             const modelSelect = document.getElementById('modelSelect');
             const input = modelSelect.value;
-            const resultsContainer = document.getElementById('resultsContainer');
             
+            toggleRandomButton(input);
+
             if (!input) { 
-                resultsContainer.innerHTML = `<p class="text-center text-yellow-400">Por favor, selecciona un modelo específico de la lista.</p>`;
+                document.getElementById('resultsContainer').innerHTML = `<p class="text-center text-yellow-400">Por favor, selecciona un modelo específico de la lista.</p>`;
                 return;
             }
 
-            resultsContainer.innerHTML = ''; 
+            renderAllConfigs(input, 'Configuraciones Fijas');
+        }
 
-            // El input es directamente el 'base_model' para filtrar
-            const targetBaseModel = input; 
-            const relevantConfigs = dbToUse.filter(device => 
+        // --- FUNCIÓN CENTRAL PARA MOSTRAR LOS 3 RESULTADOS FIJOS ---
+        const renderAllConfigs = (targetBaseModel, title) => {
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.innerHTML = ''; 
+            
+            const relevantConfigs = INITIAL_DATA.filter(device => 
                 device.base_model === targetBaseModel
             );
-            
-            // ... (Resto de la lógica de ordenamiento y renderizado)
 
             // Ordenar las configuraciones por nivel (ALTA, MEDIA, BAJA) antes de mostrar
             const sortedConfigs = relevantConfigs.sort((a, b) => {
@@ -345,13 +393,122 @@
                 return (order[a.level] || 4) - (order[b.level] || 4);
             });
 
-            // Renderizar los resultados
-            resultsContainer.innerHTML = ''; 
-            resultsContainer.insertAdjacentHTML('afterbegin', `<h2 class="text-3xl font-extrabold text-white mb-6">Resultados para: <span class="text-pink-400">${targetBaseModel}</span></h2>`);
+            // Renderizar el título de la sección
+            resultsContainer.insertAdjacentHTML('afterbegin', `<h2 class="text-3xl font-extrabold text-white mb-6">${title} para: <span class="text-pink-400">${targetBaseModel}</span></h2>`);
             
+            // Renderizar los resultados
             sortedConfigs.forEach(config => {
                 renderResult(config, resultsContainer);
             });
+        }
+        
+        // --- FUNCIÓN DE UTILIDAD: Rango DPI (Android) ---
+        const getDpiRange = (baseDpi) => {
+            // Un DPI base de 700 puede variar entre 550 y 750.
+            const base = typeof baseDpi === 'number' ? baseDpi : (parseInt(baseDpi.match(/\d+/)[0]) || 550);
+            return {
+                min: Math.max(380, base - 150), // Mínimo competitivo (para DPI variable)
+                max: base + 50 
+            };
+        };
+
+        // --- FUNCIÓN 1: GENERACIÓN DINÁMICA SIN DPI (ESTABLE / DPI DE FÁBRICA FIJO) ---
+        window.generateStableSensitivity = () => {
+            const modelSelect = document.getElementById('modelSelect');
+            const targetBaseModel = modelSelect.value;
+            const resultsContainer = document.getElementById('resultsContainer');
+
+            if (!targetBaseModel) return;
+
+            // 1. Obtener la configuración de DPI de fábrica (Nivel BAJA)
+            const baseConfig = INITIAL_DATA.find(device => 
+                device.base_model === targetBaseModel && device.level === 'BAJA'
+            );
+
+            if (!baseConfig) {
+                 resultsContainer.innerHTML = `<p class="text-center text-red-400">No se encontró una configuración base SIN DPI (BAJA) para este modelo. Por favor, selecciona otro modelo.</p>`;
+                 return;
+            }
+
+            // 2. Generar la configuración dinámica
+            const dynamicConfig = {
+                base_model: targetBaseModel,
+                model: `Sensibilidad SIN DPI Generada (${targetBaseModel})`,
+                dpi: baseConfig.dpi, // Usa el DPI de fábrica fijo
+                button: getRandomInt(45, 60), // Botón en rango común
+                general: getRandomInt(90, 150), // Sensibilidades en rango 90-150
+                red_dot: getRandomInt(90, 150),
+                scope_2x: getRandomInt(90, 150),
+                scope_4x: getRandomInt(90, 140), 
+                method: "DINÁMICA SIN DPI (Fábrica)",
+                note: `¡CONFIGURACIÓN DINÁMICA GENERADA! Usa el DPI de fábrica (${baseConfig.dpi}) con sensibilidades aleatorias en un rango de control (Max 200).`,
+                has_dpi: baseConfig.has_dpi, 
+                level: 'DINAMICA_ESTABLE' 
+            };
+
+            // 3. Renderizar el resultado
+            resultsContainer.innerHTML = '';
+            resultsContainer.insertAdjacentHTML('afterbegin', `<h2 class="text-3xl font-extrabold text-white mb-6">Resultado SIN DPI Generado: <span class="text-green-400">${targetBaseModel}</span></h2>`);
+            renderResult(dynamicConfig, resultsContainer);
+        }
+
+        // --- FUNCIÓN 2: GENERACIÓN DINÁMICA CON DPI (COMPETITIVA / DPI PERSONALIZADO Y VARIABLE) ---
+        window.generateDpiSensitivity = () => {
+            const modelSelect = document.getElementById('modelSelect');
+            const targetBaseModel = modelSelect.value;
+            const resultsContainer = document.getElementById('resultsContainer');
+
+            if (!targetBaseModel) return;
+
+            // 1. Obtener la configuración de DPI personalizado (ALTA o MEDIA) para definir el rango
+            let baseConfig = INITIAL_DATA.find(device => 
+                device.base_model === targetBaseModel && device.level === 'ALTA'
+            );
+            if (!baseConfig || String(baseConfig.dpi).toLowerCase().includes('default')) {
+                baseConfig = INITIAL_DATA.find(device => 
+                    device.base_model === targetBaseModel && device.level === 'MEDIA'
+                );
+            }
+            
+            if (!baseConfig || String(baseConfig.dpi).toLowerCase().includes('default')) {
+                 resultsContainer.innerHTML = `<p class="text-center text-red-400">No se encontró una configuración base CON DPI (MEDIA/ALTA) válida para este modelo. Prueba el modo SIN DPI.</p>`;
+                 return;
+            }
+
+            // 2. Generar un DPI variable
+            let generatedDpi;
+            let dpiNote = `DPI competitivo (${baseConfig.dpi} base) con sensibilidades aleatorias de alta velocidad (Max 200).`;
+            
+            if (targetBaseModel.includes('iPhone')) {
+                // Rango para iOS (Cursor Deslizante 80-120)
+                generatedDpi = getRandomInt(100, 120);
+                dpiNote = `Cursor Deslizante variable (${generatedDpi}) y sensibilidades in-game aleatorias (Max 200).`;
+            } else {
+                // Rango para Android (DPI)
+                const range = getDpiRange(baseConfig.dpi);
+                generatedDpi = getRandomInt(range.min, range.max);
+            }
+
+            // 3. Generar la configuración dinámica
+            const dynamicConfig = {
+                base_model: targetBaseModel,
+                model: `Sensibilidad CON DPI Generada (${targetBaseModel})`,
+                dpi: generatedDpi, // DPI AHORA ES ALEATORIO
+                button: getRandomInt(40, 55), 
+                general: getRandomInt(100, 200), // Sensibilidades en rango 100-200 (máx 200)
+                red_dot: getRandomInt(100, 200),
+                scope_2x: getRandomInt(95, 180),
+                scope_4x: getRandomInt(90, 160),
+                method: "DINÁMICA CON DPI (Competitiva)",
+                note: `¡CONFIGURACIÓN DINÁMICA GENERADA! ${dpiNote}`,
+                has_dpi: true, // Siempre tiene DPI personalizado
+                level: 'DINAMICA_COMPETITIVA' 
+            };
+
+            // 4. Renderizar el resultado
+            resultsContainer.innerHTML = '';
+            resultsContainer.insertAdjacentHTML('afterbegin', `<h2 class="text-3xl font-extrabold text-white mb-6">Resultado CON DPI Generado: <span class="text-red-400">${targetBaseModel}</span></h2>`);
+            renderResult(dynamicConfig, resultsContainer);
         }
         
         // Carga de la aplicación al iniciar la página
