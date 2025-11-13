@@ -165,10 +165,10 @@
             { base_model: "Honor X7b", model: "X7b (Sensibilidad MEDIA)", dpi: 520, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 77, button: 54, method: "CON DPI (Equilibrada)", note: "Punto dulce entre velocidad y control. Recomendado para la mayoría de los jugadores.", has_dpi: true, level: "MEDIA" },
             { base_model: "Honor X7b", model: "X7b (Sensibilidad BAJA)", dpi: "Default (390)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 56, method: "SIN DPI (Fábrica)", note: "Usa DPI de fábrica. Prioriza la estabilidad y el control del recoil en distancias largas.", has_dpi: false, level: "BAJA" },
 
-            // --- iPhone 13 (NUEVO) ---
-            { base_model: "iPhone 13", model: "iPhone 13 (Sensibilidad ALTA)", dpi: "Default (460)", general: 96, red_dot: 93, scope_2x: 88, scope_4x: 82, button: 47, method: "SIN DPI (120 Hz / Toque Rápido)", note: "Aprovecha la fluidez del panel y el tacto preciso de iOS. Ideal para arrastre rápido y tiros de reacción.", has_dpi: false, level: "ALTA" },
-            { base_model: "iPhone 13", model: "iPhone 13 (Sensibilidad MEDIA)", dpi: "Default (460)", general: 92, red_dot: 89, scope_2x: 84, scope_4x: 78, button: 49, method: "SIN DPI (Equilibrada)", note: "Mantiene control y precisión en cualquier modo de juego. Perfecta para competidores balanceados.", has_dpi: false, level: "MEDIA" },
-            { base_model: "iPhone 13", model: "iPhone 13 (Sensibilidad BAJA)", dpi: "Default (460)", general: 88, red_dot: 84, scope_2x: 80, scope_4x: 74, button: 52, method: "SIN DPI (Fábrica / Precisión)", note: "Recomendada para control total del recoil y puntería estable a larga distancia.", has_dpi: false, level: "BAJA" },
+            // --- iPhone 13 (VALORES REALES iOS: Cursor 80 / Máximo 120) ---
+            { base_model: "iPhone 13", model: "iPhone 13 (Sensibilidad ALTA)", dpi: 120, general: 96, red_dot: 93, scope_2x: 88, scope_4x: 82, button: 47, method: "SIN DPI (iOS Default / Toque rápido)", note: "Cursor deslizante default 80. Alta respuesta táctil para arrastre fluido y control fino.", has_dpi: false, level: "ALTA", slider: 80 },
+            { base_model: "iPhone 13", model: "iPhone 13 (Sensibilidad MEDIA)", dpi: 100, general: 92, red_dot: 89, scope_2x: 84, scope_4x: 78, button: 49, method: "SIN DPI (iOS Default / Equilibrada)", note: "Mantiene control con fluidez natural del panel. Cursor en 80 por defecto.", has_dpi: false, level: "MEDIA", slider: 80 },
+            { base_model: "iPhone 13", model: "iPhone 13 (Sensibilidad BAJA)", dpi: 80, general: 88, red_dot: 84, scope_2x: 80, scope_4x: 74, button: 52, method: "SIN DPI (iOS Default / Precisión)", note: "DPI máximo 120, cursor deslizante fijo en 80. Enfocado en precisión y estabilidad.", has_dpi: false, level: "BAJA", slider: 80 },
 
             // --- POCO X7 (NUEVO) ---
             { base_model: "Poco X7", model: "Poco X7 (Sensibilidad ALTA)", dpi: 680, general: 98, red_dot: 95, scope_2x: 91, scope_4x: 86, button: 48, method: "CON DPI (Extrema/120Hz)", note: "Ideal para jugadores agresivos. DPI alto para aprovechar los 120 Hz y arrastre rápido.", has_dpi: true, level: "ALTA" },
@@ -575,5 +575,6 @@
     </script>
 </body>
 </html>
+
 
 
