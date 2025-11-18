@@ -1,580 +1,277 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de Sensibilidad Pro (Acceso Exclusivo)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Estilos personalizados para un look gaming */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1a1a2e; /* Fondo oscuro */
-            color: #ffffff;
-        }
-        .card-result {
-            /* Color de fondo ajustado para un mejor contraste */
-            background-color: #0f3460; 
-            border-left: 4px solid #e94560; /* Línea roja/rosa de acento */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease;
-        }
-        .card-result:hover {
-            transform: translateY(-3px);
-        }
-        .text-dpi-custom { color: #facc15; /* yellow-400 */ }
-        .text-dpi-default { color: #4ade80; /* green-400 */ }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sensibilidades FABI ANALISTA</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
-        /* Colores para Niveles de Sensibilidad */
-        .level-ALTA { background-color: #f87171; /* red-400 */ color: #330000; }
-        .level-MEDIA { background-color: #facc15; /* yellow-400 */ color: #332100; }
-        .level-BAJA { background-color: #4ade80; /* green-400 */ color: #003300; }
-        /* Nuevos niveles para los resultados dinámicos */
-        .level-DINAMICA_ESTABLE { background-color: #10b981; /* emerald-500 */ color: #000000; }
-        .level-DINAMICA_COMPETITIVA { background-color: #ef4444; /* red-500 */ color: #000000; }
-    </style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #0a0a0a;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 30px 20px;
+    }
+
+    /* Neon Glow Animations */
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 10px #00aaff, 0 0 20px #00e0ff; }
+      50% { box-shadow: 0 0 20px #00e0ff, 0 0 40px #00aaff; }
+    }
+
+    @keyframes glowText {
+      0%,100% { text-shadow: 0 0 8px #00aaff, 0 0 12px #00e0ff; }
+      50% { text-shadow: 0 0 12px #00e0ff, 0 0 20px #00aaff; }
+    }
+
+    .card {
+      background: rgba(15, 15, 31, 0.9);
+      padding: 30px 35px;
+      border-radius: 25px;
+      max-width: 600px;
+      width: 100%;
+      border: 2px solid #00aaff;
+      animation: glow 2s infinite alternate;
+      box-shadow: 0 0 15px #00aaff;
+    }
+
+    h2 {
+      text-align: center;
+      color: #00aaff;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+      animation: glowText 2s infinite alternate;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 2px solid #00aaff;
+      margin: 10px 0;
+      background: #0b0b1a;
+      color: #fff;
+      font-weight: bold;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #00e0ff;
+      box-shadow: 0 0 15px #00e0ff;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: 2px solid #00aaff;
+      border-radius: 15px;
+      background: #0b0b1a;
+      color: #00aaff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      text-shadow: 0 0 4px #00aaff;
+    }
+
+    button:hover {
+      color: #fff;
+      border-color: #00e0ff;
+      box-shadow: 0 0 20px #00e0ff, 0 0 30px #00aaff;
+      background: linear-gradient(90deg, #0b0b1a, #001f3f);
+    }
+
+    button.secondary { border-color: #ff0044; color: #ff0044; }
+    button.secondary:hover {
+      color: #fff;
+      border-color: #ff4477;
+      box-shadow: 0 0 20px #ff4477, 0 0 30px #ff0044;
+    }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .result {
+      margin-top: 20px;
+      background: #0b0b1a;
+      padding: 18px;
+      border-radius: 15px;
+      white-space: pre-line;
+      min-height: 130px;
+      border: 2px solid #00aaff;
+      box-shadow: 0 0 15px #00aaff;
+      font-weight: bold;
+      animation: glow 2s infinite alternate;
+    }
+
+    .hint { color: #888; font-size: 13px; margin-bottom: 5px; }
+
+  </style>
 </head>
-<body class="p-4 md:p-8">
+<body>
+  <canvas id="bgCanvas"></canvas>
 
-    <div class="max-w-2xl mx-auto">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-red-400 mb-2">SENSIBILIDADES FABI FF</h1>
-            <p class="text-lg text-gray-300">Encuentra la configuración ideal para dar "Todo Rojo" en tu dispositivo.</p>
-        </header>
-        
-        <section id="loginForm" class="p-6 bg-gray-800 rounded-lg shadow-xl max-w-sm mx-auto mb-10 border border-yellow-500">
-            <h2 class="text-2xl font-bold mb-4 text-yellow-400 text-center">🔐 Acceso Exclusivo de Miembros</h2>
-            
-            <input 
-                type="text" 
-                id="userInput" 
-                placeholder="Usuario" 
-                class="w-full p-3 mb-4 rounded-lg bg-gray-900 border border-gray-600 text-white focus:ring-yellow-400 focus:border-yellow-400"
-            >
+  <div class="container">
+    <!-- LOGIN -->
+    <div class="card" id="loginCard">
+      <h2>LOGIN SENSIBILIDADES FABI ANALISTA</h2>
+      <label>Usuario</label>
+      <input type="text" id="username" placeholder="Usuario" />
+      <label>Contraseña</label>
+      <input type="password" id="password" placeholder="Contraseña" />
+      <button onclick="login()">Iniciar sesión</button>
+    </div>
 
-            <input 
-                type="password" 
-                id="passwordInput" 
-                placeholder="Contraseña" 
-                class="w-full p-3 mb-4 rounded-lg bg-gray-900 border border-gray-600 text-white focus:ring-yellow-400 focus:border-yellow-400"
-            >
-            
-            <button 
-                onclick="checkPassword()" 
-                class="w-full px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-black font-bold rounded-lg transition duration-200 shadow-lg"
-            >
-                Entrar y Acceder a las Configs
-            </button>
-        </section>
-        <div id="protectedContent" style="display: none;">
-            
-            <section class="mb-6 p-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
-                <label class="block text-lg font-semibold mb-3 text-pink-300">Selecciona el Modelo:</label>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
-                    <select 
-                        id="brandSelect" 
-                        onchange="populateModels()" 
-                        class="flex-grow p-3 rounded-lg bg-gray-900 border border-gray-700 focus:ring-red-400 focus:border-red-400 text-white"
-                    >
-                        <option value="">-- Selecciona la Marca --</option>
-                    </select>
-                    
-                    <select 
-                        id="modelSelect" 
-                        onchange="searchSensitivity()" 
-                        class="flex-grow p-3 rounded-lg bg-gray-900 border border-gray-700 focus:ring-red-400 focus:border-red-400 text-white"
-                        disabled
-                    >
-                        <option value="">-- Selecciona el Modelo Específico --</option>
-                    </select>
-                </div>
-                <p class="text-xs text-gray-500 mt-2">Al seleccionar el modelo se muestran las 3 configuraciones fijas (Alta, Media, Baja) de la base de datos.</p>
-            </section>
-            <section class="mb-8 p-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700 text-center">
-                <label class="block text-lg font-semibold mb-3 text-red-300">Generador de Sensibilidad Dinámica (Max 200):</label>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <button 
-                        id="stableGenerateButton"
-                        onclick="generateStableSensitivity()" 
-                        class="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition duration-200 disabled:bg-gray-500"
-                        disabled
-                    >
-                        ✨ Generar Configuración SIN DPI
-                    </button>
-                    
-                    <button 
-                        id="randomGenerateButton"
-                        onclick="generateDpiSensitivity()" 
-                        class="w-full px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition duration-200 disabled:bg-gray-500"
-                        disabled
-                    >
-                        🔥 Generar Configuración CON DPI
-                    </button>
-                </div>
+    <!-- GENERADOR -->
+    <div class="card" id="mainCard" style="display:none;">
+      <h2>SENSIBILIDADES FABI ANALISTA</h2>
 
-                <p class="text-xs text-gray-500 mt-2">Cada botón genera una configuración de sensibilidad **aleatoria y diferente** según el modo (Estable/Competitivo).</p>
-            </section>
-            <section id="resultsContainer" class="mt-10">
-                <div id="loadingMessage" class="p-6 bg-gray-800 rounded-lg text-center">
-                    <p class="text-xl font-semibold text-blue-400 animate-pulse">Base de datos cargada. ¡Selecciona un modelo para empezar! 🎯</p>
-                </div>
-            </section>
-        </div>
-        </div>
+      <label>Marca</label>
+      <input id="brand" placeholder="Ej: iPhone, Xiaomi, etc." />
 
-   <script type="module">
-    // --- FUNCIÓN DE LOGIN (SOLUCIÓN DE FRONT-END PARA GITHUB) ---
-    const SECURE_USER = "fabian"; // ¡USUARIO DE ACCESO!
-    const SECURE_PASSWORD = "fabipro"; // ¡CONTRASEÑA DE ACCESO!
+      <label>Modelo (escribe cualquiera)</label>
+      <input id="model" placeholder="Ej: Redmi Note 10 Pro" />
+      <div class="hint">Escribe el modelo aquí — el sistema generará sensibilidades para ese modelo.</div>
 
-    // Segundo usuario permitido
-    const SECURE_USER_2 = "samuel"; // ¡USUARIO SECUNDARIO!
-    const SECURE_PASSWORD_2 = "samupro"; // ¡CONTRASEÑA SECUNDARIA!
-    
-    window.checkPassword = () => {
-        const userInput = document.getElementById('userInput').value.trim();
-        const passwordInput = document.getElementById('passwordInput').value.trim();
-        const protectedContent = document.getElementById('protectedContent');
-        const loginForm = document.getElementById('loginForm');
+      <div class="row">
+        <button onclick="setMode('dpi')" class="small">Con DPI</button>
+        <button onclick="setMode('nodpi')" class="small secondary">Sin DPI</button>
+      </div>
+      <p class="hint" id="modeHint">Modo actual: Sin DPI</p>
 
-        if (
-            (userInput === SECURE_USER && passwordInput === SECURE_PASSWORD) ||
-            (userInput === SECURE_USER_2 && passwordInput === SECURE_PASSWORD_2)
-        ) {
-            loginForm.style.display = 'none'; // Oculta el formulario
-            protectedContent.style.display = 'block'; // Muestra el contenido
+      <div class="row" style="margin-top:12px;">
+        <button onclick="genLevel('alta')">Generar ALTA</button>
+        <button onclick="genLevel('media')" class="secondary">Generar MEDIA</button>
+      </div>
+      <div style="margin-top:10px;">
+        <button onclick="genLevel('baja')" class="small">Generar BAJA</button>
+      </div>
 
-            // Mensaje personalizado según el usuario
-            const nombreUsuario = userInput === SECURE_USER ? "Fabian" : "Samuel";
-            alert(`¡Acceso de Miembros Concedido! Bienvenido/a ${nombreUsuario}.`);
+      <div id="output" class="result">
+        Escribe el modelo y selecciona un modo (Con DPI / Sin DPI), luego pulsa una sensibilidad.
+      </div>
+    </div>
+  </div>
 
-            // Inicializa selectores una vez que el contenido es visible
-            initializeSelectors(); 
+  <script>
+    // LOGIN con dos usuarios
+    function login() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      if ((user === 'fabian' && pass === 'fabipro') || (user === 'samuel' && pass === 'samupro')) {
+        document.getElementById('loginCard').style.display = 'none';
+        document.getElementById('mainCard').style.display = 'block';
+      } else {
+        alert('Usuario o contraseña incorrectos 😬');
+      }
+    }
+
+    // Random 1-200
+    function r() { return Math.floor(Math.random() * 200) + 1; }
+
+    let mode = 'nodpi';
+
+    function setMode(m) {
+      mode = m === 'dpi' ? 'dpi' : 'nodpi';
+      document.getElementById('modeHint').innerText = 'Modo actual: ' + (mode === 'dpi' ? 'Con DPI' : 'Sin DPI');
+      const out = document.getElementById('output');
+      out.innerText = `Modo seleccionado: ${mode === 'dpi' ? 'Con DPI' : 'Sin DPI'}\nEscribe el modelo y pulsa un botón de sensibilidad.`;
+    }
+
+    function genLevel(level) {
+      const brand = document.getElementById('brand').value.trim();
+      const model = document.getElementById('model').value.trim();
+      if (!model) { alert('Por favor escribe el modelo del teléfono antes de generar sensibilidad.'); return; }
+
+      const factor = level === 'alta' ? 1 : level === 'media' ? 0.75 : 0.5;
+
+      let sens = {
+        general: Math.min(200, Math.floor(r() * factor)),
+        mira2:  Math.min(200, Math.floor(r() * factor)),
+        mira4:  Math.min(200, Math.floor(r() * factor)),
+        puntoRojo: Math.min(200, Math.floor(r() * factor)),
+        fireButton: Math.floor(Math.random() * (60 - 35 + 1)) + 35
+      };
+
+      let dpiDisplay = 'Sin DPI';
+      if (mode === 'dpi') {
+        if (brand.toLowerCase().includes('iphone')) {
+          dpiDisplay = `Cursor Deslizante: ${Math.floor(Math.random() * (120 - 80 + 1)) + 80}`;
         } else {
-            alert("¡Usuario o Contraseña incorrectos! Por favor, inténtalo de nuevo.");
-            document.getElementById('userInput').value = ''; // Limpia el campo de usuario
-            document.getElementById('passwordInput').value = ''; // Limpia el campo de contraseña
+          dpiDisplay = `DPI: ${Math.floor(Math.random() * 501) + 300}`;
         }
-    } 
+      }
 
-        // --- BASE DE DATOS FINAL Y COMPLETA ---
-        const INITIAL_DATA = [
-            // --- HONOR X7B (NUEVO) ---
-            { base_model: "Honor X7b", model: "X7b (Sensibilidad ALTA)", dpi: 650, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 82, button: 50, method: "CON DPI (Rápida)", note: "DPI alto para maximizar la velocidad de giro. Ideal para arrastre vertical agresivo.", has_dpi: true, level: "ALTA" },
-            { base_model: "Honor X7b", model: "X7b (Sensibilidad MEDIA)", dpi: 520, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 77, button: 54, method: "CON DPI (Equilibrada)", note: "Punto dulce entre velocidad y control. Recomendado para la mayoría de los jugadores.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Honor X7b", model: "X7b (Sensibilidad BAJA)", dpi: "Default (390)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 56, method: "SIN DPI (Fábrica)", note: "Usa DPI de fábrica. Prioriza la estabilidad y el control del recoil en distancias largas.", has_dpi: false, level: "BAJA" },
+      document.getElementById('output').innerText =
+        `📱 ${brand} - ${model}\n` +
+        `🔧 Modo: ${mode === 'dpi' ? 'Con DPI' : 'Sin DPI'}\n` +
+        `🎯 Nivel: ${level.toUpperCase()}\n\n` +
+        `General: ${sens.general}\n` +
+        `Punto Rojo: ${sens.puntoRojo}\n` +
+        `Mira 2x: ${sens.mira2}\n` +
+        `Mira 4x: ${sens.mira4}\n` +
+        `Tamaño botón de disparo: ${sens.fireButton}\n\n` +
+        `${dpiDisplay}`;
+    }
 
-            // --- iPhone 13 (VALORES REALES iOS: Cursor 80 / Máximo 120) ---
-            { base_model: "iPhone 13", model: "iPhone 13 (Sensibilidad ALTA)", dpi: 120, general: 96, red_dot: 93, scope_2x: 88, scope_4x: 82, button: 47, method: "SIN DPI (iOS Default / Toque rápido)", note: "Cursor deslizante default 80. Alta respuesta táctil para arrastre fluido y control fino.", has_dpi: false, level: "ALTA", slider: 80 },
-            { base_model: "iPhone 13", model: "iPhone 13 (Sensibilidad MEDIA)", dpi: 100, general: 92, red_dot: 89, scope_2x: 84, scope_4x: 78, button: 49, method: "SIN DPI (iOS Default / Equilibrada)", note: "Mantiene control con fluidez natural del panel. Cursor en 80 por defecto.", has_dpi: false, level: "MEDIA", slider: 80 },
-            { base_model: "iPhone 13", model: "iPhone 13 (Sensibilidad BAJA)", dpi: 80, general: 88, red_dot: 84, scope_2x: 80, scope_4x: 74, button: 52, method: "SIN DPI (iOS Default / Precisión)", note: "DPI máximo 120, cursor deslizante fijo en 80. Enfocado en precisión y estabilidad.", has_dpi: false, level: "BAJA", slider: 80 },
+    // PARTÍCULAS NEON
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-            // --- POCO X7 (NUEVO) ---
-            { base_model: "Poco X7", model: "Poco X7 (Sensibilidad ALTA)", dpi: 680, general: 98, red_dot: 95, scope_2x: 91, scope_4x: 86, button: 48, method: "CON DPI (Extrema/120Hz)", note: "Ideal para jugadores agresivos. DPI alto para aprovechar los 120 Hz y arrastre rápido.", has_dpi: true, level: "ALTA" },
-            { base_model: "Poco X7", model: "Poco X7 (Sensibilidad MEDIA)", dpi: 550, general: 94, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 52, method: "CON DPI (Equilibrada)", note: "Punto medio entre control y velocidad. Excelente para rankear con precisión.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Poco X7", model: "Poco X7 (Sensibilidad BAJA)", dpi: "Default (411)", general: 97, red_dot: 93, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Fábrica/Estable)", note: "Usa DPI de fábrica. Recomendado para control de recoil y tiros a larga distancia.", has_dpi: false, level: "BAJA" },
+    let particles = [];
+    for(let i=0;i<120;i++){
+      particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, dx:(Math.random()-0.5)*1, dy:(Math.random()-0.5)*1.5});
+    }
 
-            // --- SAMSUNG GALAXY S21 ULTRA ---
-            { base_model: "Samsung Galaxy S21 Ultra", model: "S21 Ultra (Sensibilidad ALTA)", dpi: 580, general: 100, red_dot: 98, scope_2x: 95, scope_4x: 90, button: 45, method: "CON DPI (Extrema/Competitiva)", note: "DPI muy alto para movimientos 360 y arrastre vertical rápido. Requiere buen control de recoil.", has_dpi: true, level: "ALTA" },
-            { base_model: "Samsung Galaxy S21 Ultra", model: "S21 Ultra (Sensibilidad MEDIA)", dpi: 480, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 50, method: "CON DPI (Equilibrada/Pro)", note: "Punto dulce entre velocidad y control. Ideal para la mayoría de los jugadores de alto nivel.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Samsung Galaxy S21 Ultra", model: "S21 Ultra (Sensibilidad BAJA)", dpi: "Default (411)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 55, method: "SIN DPI (Fábrica/Estable)", note: "Usa el DPI de fábrica. Prioriza la estabilidad y el control del recoil en distancias largas.", has_dpi: false, level: "BAJA" },
+    function animate(){
+      ctx.fillStyle = 'rgba(10,10,10,0.4)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      particles.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle = '#00aaff';
+        ctx.shadowColor = '#00e0ff';
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        p.x+=p.dx;
+        p.y+=p.dy;
+        if(p.x>canvas.width)p.x=0;
+        if(p.x<0)p.x=canvas.width;
+        if(p.y>canvas.height)p.y=0;
+        if(p.y<0)p.y=canvas.height;
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
 
-            // --- SAMSUNG GALAXY S23 ULTRA ---
-            { base_model: "Samsung Galaxy S23 Ultra", model: "S23 Ultra (Sensibilidad ALTA)", dpi: 720, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 50, method: "CON DPI", note: "Alta fluidez y precisión, recomendado para 'Arrastre'.", has_dpi: true, level: "ALTA" },
-            { base_model: "Samsung Galaxy S23 Ultra", model: "S23 Ultra (Sensibilidad MEDIA)", dpi: 580, general: 94, red_dot: 90, scope_2x: 85, scope_4x: 80, button: 52, method: "CON DPI (Estable)", note: "Equilibrio ideal para jugabilidad pro.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Samsung Galaxy S23 Ultra", model: "S23 Ultra (Sensibilidad BAJA)", dpi: "Default (384)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 55, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Prioriza el control de miras largas.", has_dpi: false, level: "BAJA" },
+    window.addEventListener('resize', ()=>{
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
 
-            // --- SAMSUNG GALAXY S23 ---
-            { base_model: "Samsung Galaxy S23", model: "S23 (Sensibilidad ALTA)", dpi: 700, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 50, method: "CON DPI (Rápida)", note: "DPI alto para maximizar la fluidez. Ideal para jugadores agresivos.", has_dpi: true, level: "ALTA" },
-            { base_model: "Samsung Galaxy S23", model: "S23 (Sensibilidad MEDIA)", dpi: 550, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 80, button: 52, method: "CON DPI (Equilibrada)", note: "Punto medio entre velocidad y control de recoil. Óptimo para rankear.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Samsung Galaxy S23", model: "S23 (Sensibilidad BAJA)", dpi: "Default (411)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 55, method: "SIN DPI (Fábrica)", note: "Usa el DPI de fábrica. Prioriza el control en rangos largos.", has_dpi: false, level: "BAJA" },
-
-            // --- SAMSUNG GALAXY A54 ---
-            { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad ALTA)", dpi: 650, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 50, method: "CON DPI (Rápida)", note: "Máxima respuesta para el A54.", has_dpi: true, level: "ALTA" },
-            { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 85, scope_2x: 82, scope_4x: 75, button: 55, method: "CON DPI (Estándar)", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Samsung Galaxy A54", model: "A54 (Sensibilidad BAJA)", dpi: "Default (384)", general: 95, red_dot: 90, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Comodidad)", note: "Ideal para jugar a 40 FPS.", has_dpi: false, level: "BAJA" },
-            
-            // --- VIVO V40 LITE ---
-            { base_model: "Vivo V40 Lite", model: "V40 Lite (Sensibilidad ALTA)", dpi: 680, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 82, button: 50, method: "CON DPI (Rápida)", note: "DPI alto para aprovechar la fluidez de la pantalla. Ideal para arrastre rápido.", has_dpi: true, level: "ALTA" },
-            { base_model: "Vivo V40 Lite", model: "V40 Lite (Sensibilidad MEDIA)", dpi: 550, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 78, button: 53, method: "CON DPI (Equilibrada)", note: "Punto medio óptimo para estabilidad y velocidad.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Vivo V40 Lite", model: "V40 Lite (Sensibilidad BAJA)", dpi: "Default (411)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 55, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Mayor estabilidad y control de recoil.", has_dpi: false, level: "BAJA" },
-
-            // --- OPPO A74 5G ---
-            { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad ALTA)", dpi: 750, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "CON DPI (Extrema/90Hz)", note: "Aprovecha la tasa de refresco de 90Hz. Velocidad máxima para 360s.", has_dpi: true, level: "ALTA" },
-            { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad MEDIA)", dpi: 600, general: 93, red_dot: 89, scope_2x: 85, scope_4x: 77, button: 55, method: "CON DPI (Equilibrada)", note: "El punto dulce entre velocidad y control de recoil para el Snapdragon.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Oppo A74 5G", model: "A74 5G (Sensibilidad BAJA)", dpi: "Default (411)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 58, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Prioriza el tiro preciso y la estabilidad de la mira.", has_dpi: false, level: "BAJA" },
-
-            // --- MOTOROLA EDGE 40 (COMPLETADO) ---
-            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad ALTA)", dpi: 700, general: 98, red_dot: 95, scope_2x: 90, scope_4x: 85, button: 48, method: "CON DPI (Extrema)", note: "DPI alto para aprovechar la pantalla fluida del Edge 40.", has_dpi: true, level: "ALTA" },
-            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad MEDIA)", dpi: 650, general: 96, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 52, method: "CON DPI", note: "Óptimo para sensibilidad media/alta y control.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Motorola Edge 40", model: "Edge 40 (Sensibilidad BAJA)", dpi: 550, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 75, button: 55, method: "CON DPI (Estable)", note: "DPI conservador para máximo control de recoil.", has_dpi: true, level: "BAJA" },
-            
-            // --- MOTOROLA E20 (NUEVO) ---
-            { base_model: "Motorola E20", model: "E20 (Sensibilidad ALTA)", dpi: 580, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 55, method: "CON DPI (Rápida)", note: "DPI alto para compensar la pantalla HD+. Ideal para arrastre vertical.", has_dpi: true, level: "ALTA" },
-            { base_model: "Motorola E20", model: "E20 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 75, button: 58, method: "CON DPI (Equilibrada)", note: "El punto dulce entre velocidad y precisión para su procesador.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Motorola E20", model: "E20 (Sensibilidad BAJA)", dpi: "Default (384)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 60, method: "SIN DPI (Fábrica)", note: "Usa DPI de fábrica. Prioriza la estabilidad y el tiro a larga distancia.", has_dpi: false, level: "BAJA" },
-            
-            // --- INFINIX SMART 9 (YA ESTABA COMPLETO) ---
-            { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad ALTA)", dpi: 580, general: 93, red_dot: 88, scope_2x: 83, scope_4x: 75, button: 52, method: "CON DPI (Rápida)", note: "DPI alto para maximizar la velocidad de giro.", has_dpi: true, level: "ALTA" },
-            { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 72, button: 55, method: "CON DPI (Medio)", note: "Punto dulce para arrastre y control en miras 2x.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Infinix Smart 9", model: "Infinix Smart 9 (Sensibilidad BAJA)", dpi: "Default (360)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 58, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Mayor estabilidad en tiro y control de recoil.", has_dpi: false, level: "BAJA" },
-            
-            // --- IPHONE 16 (ANTICIPADO) ---
-            { base_model: "iPhone 16", model: "iPhone 16 (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 99, scope_2x: 96, scope_4x: 94, button: 45, method: "Velocidad Cursor Deslizante", note: "Anticipado. Usar Cursor Deslizante a 120 (Refinado).", has_dpi: true, level: "ALTA" },
-            { base_model: "iPhone 16", model: "iPhone 16 (Sensibilidad MEDIA)", dpi: "105", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Anticipado. Usar Cursor Deslizante a 105.", has_dpi: true, level: "MEDIA" },
-            { base_model: "iPhone 16", model: "iPhone 16 (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "SIN DPI (Fábrica)", note: "Anticipado. Usar valor de fábrica (80) en Cursor Deslizante.", has_dpi: false, level: "BAJA" },
-
-            // --- IPHONE 15 PRO MAX ---
-            { base_model: "iPhone 15 Pro Max", model: "15 Pro Max (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 99, scope_2x: 96, scope_4x: 94, button: 45, method: "Velocidad Cursor Deslizante", note: "Valor máximo (120) para giro rápido (Cursor Deslizante).", has_dpi: true, level: "ALTA" },
-            { base_model: "iPhone 15 Pro Max", model: "15 Pro Max (Sensibilidad MEDIA)", dpi: "105", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Velocidad equilibrada (105) para Cursor Deslizante.", has_dpi: true, level: "MEDIA" },
-            { base_model: "iPhone 15 Pro Max", model: "15 Pro Max (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante. Mayor control.", has_dpi: false, level: "BAJA" },
-            
-            // --- IPHONE 14 PRO MAX ---
-            { base_model: "iPhone 14 Pro Max", model: "14 Pro Max (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 99, scope_2x: 95, scope_4x: 90, button: 45, method: "Velocidad Cursor Deslizante", note: "Máxima fluidez. Configurar Cursor Deslizante a 120 (Refinado).", has_dpi: true, level: "ALTA" },
-            { base_model: "iPhone 14 Pro Max", model: "14 Pro Max (Sensibilidad MEDIA)", dpi: "110", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Equilibrio entre velocidad y precisión. Cursor Deslizante a 110.", has_dpi: true, level: "MEDIA" },
-            { base_model: "iPhone 14 Pro Max", model: "14 Pro Max (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante. Ideal para estabilidad.", has_dpi: false, level: "BAJA" },
-            
-            // --- IPHONE 13 PRO MAX (NUEVO) ---
-            { base_model: "iPhone 13 Pro Max", model: "13 Pro Max (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 98, scope_2x: 94, scope_4x: 89, button: 45, method: "Velocidad Cursor Deslizante", note: "Similar al 14 Pro Max. Máxima velocidad (120) para Cursor Deslizante.", has_dpi: true, level: "ALTA" },
-            { base_model: "iPhone 13 Pro Max", model: "13 Pro Max (Sensibilidad MEDIA)", dpi: "110", general: 97, red_dot: 94, scope_2x: 90, scope_4x: 85, button: 48, method: "Velocidad Cursor Deslizante", note: "Equilibrio. Velocidad de Cursor Deslizante a 110.", has_dpi: true, level: "MEDIA" },
-            { base_model: "iPhone 13 Pro Max", model: "13 Pro Max (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante para máxima estabilidad.", has_dpi: false, level: "BAJA" },
-
-            // --- IPHONE 11 ---
-            { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad ALTA)", dpi: "120 (Máx)", general: 100, red_dot: 98, scope_2x: 95, scope_4x: 90, button: 45, method: "Velocidad Cursor Deslizante", note: "Máxima velocidad (120) de Cursor Deslizante y arrastre.", has_dpi: true, level: "ALTA" },
-            { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad MEDIA)", dpi: "100", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "Velocidad Cursor Deslizante", note: "Velocidad de Cursor Deslizante equilibrada (100).", has_dpi: true, level: "MEDIA" },
-            { base_model: "iPhone 11", model: "iPhone 11 (Sensibilidad BAJA)", dpi: "Default (80)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 52, method: "SIN DPI (Fábrica)", note: "Usa el valor de fábrica (80) en Cursor Deslizante para estabilidad total.", has_dpi: false, level: "BAJA" },
-            
-            // --- XIAOMI/REDMI/POCO ---
-            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad ALTA)", dpi: 680, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 88, button: 48, method: "CON DPI (Extrema)", note: "Aprovecha la pantalla 120Hz. Ideal para jugadores agresivos y 360s rápidos.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad MEDIA)", dpi: 520, general: 94, red_dot: 90, scope_2x: 85, scope_4x: 80, button: 50, method: "CON DPI (Estable)", note: "Mejor balance para tiro a la cabeza en distancias medias. Menor recoil.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi Note 14 Pro", model: "Note 14 Pro (Sensibilidad BAJA)", dpi: "Default (384)", general: 98, red_dot: 95, scope_2x: 90, scope_4x: 85, button: 52, method: "SIN DPI (Fábrica)", note: "DPI de fábrica. Compensado con alta sensibilidad in-game para control de recoil.", has_dpi: false, level: "BAJA" },
-            { base_model: "Xiaomi Redmi 12S", model: "12S (Sensibilidad ALTA)", dpi: 650, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 82, button: 50, method: "CON DPI (Rápida)", note: "DPI alto para maximizar la respuesta y el arrastre vertical.", has_dpi: true, level: "ALTA" },
-            { base_model: "Xiaomi Redmi 12S", model: "12S (Sensibilidad MEDIA)", dpi: 520, general: 92, red_dot: 88, scope_2x: 84, scope_4x: 77, button: 54, method: "CON DPI (Equilibrada)", note: "Punto dulce para un juego rápido y controlable.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Xiaomi Redmi 12S", model: "12S (Sensibilidad BAJA)", dpi: "Default (392)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 56, method: "SIN DPI (Fábrica)", note: "Usa DPI de fábrica. Prioriza la estabilidad y el control de la mira en distancias largas.", has_dpi: false, level: "BAJA" },
-            { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad ALTA)", dpi: 600, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 82, button: 50, method: "CON DPI (Agresiva)", note: "DPI alto para maximizar la velocidad de giro en el Helio G81. Ideal para distancias cortas.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad MEDIA)", dpi: 520, general: 90, red_dot: 86, scope_2x: 82, scope_4x: 75, button: 55, method: "CON DPI (Equilibrada)", note: "Punto óptimo entre control y velocidad. Recomendado para la mayoría de jugadores.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi 14C", model: "Redmi 14C (Sensibilidad BAJA)", dpi: "Default (380)", general: 95, red_dot: 90, scope_2x: 85, scope_4x: 78, button: 58, method: "SIN DPI (Estable)", note: "DPI de fábrica. Mayor estabilidad en tiro y control de recoil.", has_dpi: false, level: "BAJA" },
-            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad ALTA)", dpi: 600, general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 50, method: "CON DPI (Rápida)", note: "Máxima respuesta y arrastre vertical.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 75, button: 55, method: "CON DPI (Medio)", note: "DPI equilibrado para rendimiento en AMOLED.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi Note 11", model: "Note 11 (Sensibilidad BAJA)", dpi: "Default (409)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 55, method: "SIN DPI (Segura)", note: "DPI de fábrica. Control en rangos medios.", has_dpi: false, level: "BAJA" },
-            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad ALTA)", dpi: 630, general: 93, red_dot: 89, scope_2x: 84, scope_4x: 75, button: 45, method: "CON DPI (Competitiva)", note: "Ideal para jugadores que usan agarre de 4 dedos.", has_dpi: true, level: "ALTA" },
-            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad MEDIA)", dpi: 550, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 70, button: 46, method: "CON DPI", note: "Buen equilibrio entre velocidad y control.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Poco X6", model: "Poco X6 (Sensibilidad BAJA)", dpi: "Default (440)", general: 95, red_dot: 92, scope_2x: 88, scope_4x: 80, button: 48, method: "SIN DPI (Estable)", note: "DPI de fábrica, prioriza la precisión.", has_dpi: false, level: "BAJA" },
-            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad ALTA)", dpi: 580, general: 93, red_dot: 89, scope_2x: 84, scope_4x: 75, button: 55, method: "CON DPI (Rápida)", note: "Rápida para maximizar el desempeño en este modelo.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 73, button: 57, method: "CON DPI (Medio)", note: "Punto dulce para arrastre vertical suave.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi 10", model: "Redmi 10 (Sensibilidad BAJA)", dpi: 500, general: 90, red_dot: 86, scope_2x: 80, scope_4x: 70, button: 57, method: "CON DPI (Baja)", note: "Conservador para evitar el lag.", has_dpi: true, level: "BAJA" },
-            { base_model: "Redmi 15 Plus", model: "Redmi 15 Plus (Sensibilidad ALTA)", dpi: 750, general: 99, red_dot: 96, scope_2x: 93, scope_4x: 89, button: 45, method: "CON DPI (Extrema)", note: "Velocidad máxima para 144Hz. Muy sensible.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi 15 Plus", model: "Redmi 15 Plus (Sensibilidad MEDIA)", dpi: "Default (450)", general: 100, red_dot: 100, scope_2x: 95, scope_4x: 90, button: 50, method: "SIN DPI (Pro Player)", note: "Sensibilidad in-game máxima y DPI de fábrica.", has_dpi: false, level: "MEDIA" },
-            { base_model: "Redmi Note 13 Pro", model: "Redmi Note 13 Pro (Sensibilidad ALTA)", dpi: 620, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 82, button: 48, method: "CON DPI (Equilibrada Pro)", note: "Jugadores agresivos con buen control de recoil.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi Note 13 Pro", model: "Redmi Note 13 Pro (Sensibilidad MEDIA)", dpi: "Default (440)", general: 98, red_dot: 95, scope_2x: 91, scope_4x: 86, button: 52, method: "SIN DPI (Control)", note: "Prioriza precisión, usa DPI de fábrica.", has_dpi: false, level: "MEDIA" },
-            { base_model: "Redmi Note 13 Pro", model: "Redmi Note 13 Pro (Sensibilidad BAJA)", dpi: 500, general: 90, red_dot: 85, scope_2x: 80, scope_4x: 75, button: 55, method: "CON DPI (Baja)", note: "Bajo DPI para estabilidad extrema.", has_dpi: true, level: "BAJA" },
-            { base_model: "Redmi Note 13", model: "Redmi Note 13 (Sensibilidad ALTA)", dpi: 600, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 82, button: 50, method: "CON DPI (Rápida)", note: "Rápida para maximizar la velocidad de giro.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi Note 13", model: "Redmi Note 13 (Sensibilidad MEDIA)", dpi: 560, general: 93, red_dot: 89, scope_2x: 85, scope_4x: 77, button: 53, method: "CON DPI (Media)", note: "Sensibilidad suave y rápida. Excelente para arrastre vertical.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi Note 13", model: "Redmi Note 13 (Sensibilidad BAJA)", dpi: "Default (400)", general: 95, red_dot: 91, scope_2x: 87, scope_4x: 80, button: 53, method: "SIN DPI (Estándar)", note: "DPI de fábrica. Configuración de juego equilibrada.", has_dpi: false, level: "BAJA" },
-            { base_model: "Redmi Note 12 Pro", model: "Redmi Note 12 Pro (Sensibilidad ALTA)", dpi: 620, general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 48, method: "CON DPI (Rápida)", note: "Máxima respuesta para pantallas AMOLED.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi Note 12 Pro", model: "Redmi Note 12 Pro (Sensibilidad MEDIA)", dpi: 580, general: 96, red_dot: 93, scope_2x: 89, scope_4x: 80, button: 50, method: "CON DPI (Equilibrada)", note: "Respuesta rápida para pantallas AMOLED.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi Note 12 Pro", model: "Redmi Note 12 Pro (Sensibilidad BAJA)", dpi: "Default (440)", general: 98, red_dot: 95, scope_2x: 92, scope_4x: 85, button: 54, method: "SIN DPI (Segura)", note: "DPI de fábrica. Control en rangos medios.", has_dpi: false, level: "BAJA" },
-            { base_model: "Redmi 12", model: "Redmi 12 (Sensibilidad ALTA)", dpi: 560, general: 95, red_dot: 90, scope_2x: 85, scope_4x: 77, button: 52, method: "CON DPI (Rápida)", note: "Velocidad extrema para un arrastre rápido. Requiere control de recoil.", has_dpi: true, level: "ALTA" },
-            { base_model: "Redmi 12", model: "Redmi 12 (Sensibilidad MEDIA)", dpi: 520, general: 91, red_dot: 87, scope_2x: 83, scope_4x: 75, button: 55, method: "CON DPI (Equilibrada)", note: "El mejor punto medio entre velocidad y precisión.", has_dpi: true, level: "MEDIA" },
-            { base_model: "Redmi 12", model: "Redmi 12 (Sensibilidad BAJA)", dpi: "Default (395)", general: 96, red_dot: 91, scope_2x: 87, scope_4x: 80, button: 58, method: "SIN DPI (Estable)", note: "DPI de fábrica. Prioriza la estabilidad y el control de la mira.", has_dpi: false, level: "BAJA" },
-        ];
-        // --- FIN DE BASE DE DATOS FINAL ---
-
-
-        // --- FUNCIONES DE RENDERIZADO Y LÓGICA (NO MODIFICADAS) ---
-        
-        const getRandomInt = (min, max) => {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        window.renderSensor = (label, value) => {
-            const displayValue = value > 100 ? `<span class="text-yellow-400">${value}%</span>` : `${value}%`;
-            return `
-                <div class="flex flex-col items-center p-2 bg-gray-900 rounded-md">
-                    <span class="text-pink-300 font-semibold">${label}</span>
-                    <span class="text-xl font-extrabold">${displayValue}</span>
-                </div>
-            `;
-        }
-
-        window.renderResult = (config, container) => {
-            const isDefaultDPI = !config.has_dpi || String(config.dpi).toLowerCase().includes('default');
-            const dpiColorClass = isDefaultDPI ? 'text-dpi-default' : 'text-dpi-custom';
-            
-            const levelClass = `level-${config.level || 'DINAMICA'}`;
-            
-            let dpiLabel = 'DPI (Ancho Más Pequeño):';
-            if (config.base_model.includes('iPhone')) {
-                dpiLabel = 'Cursor Deslizante (iOS):';
-            }
-            
-            const levelDisplay = config.level.startsWith('DINAMICA') ? 'GENERADA' : config.level.toUpperCase();
-
-
-            const html = `
-                <div class="card-result p-6 rounded-xl space-y-4 mb-6">
-                    <div class="flex justify-between items-center pb-2 border-b border-gray-700">
-                        <h2 class="text-2xl font-extrabold text-pink-300">${config.model}</h2>
-                        <span class="px-3 py-1 rounded-full text-sm font-bold shadow-md ${levelClass}">${levelDisplay}</span>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4 text-sm font-medium pt-3">
-                        <div class="bg-gray-700/50 p-3 rounded-lg flex justify-between items-center">
-                            <span>${dpiLabel}</span>
-                            <span class="text-lg font-bold ${dpiColorClass}">${config.dpi}</span>
-                        </div>
-                        <div class="bg-gray-700/50 p-3 rounded-lg flex justify-between items-center">
-                            <span>Botón de Disparo:</span>
-                            <span class="text-xl font-extrabold text-red-500 bg-red-900/40 px-3 py-1 rounded-md border border-red-500">${config.button}%</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-700/50 p-4 rounded-lg">
-                        <h3 class="text-lg font-bold mb-2 text-red-400">SENSIBILIDAD IN-GAME (Max 200)</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                            ${renderSensor('General', config.general)}
-                            ${renderSensor('Punto Rojo', config.red_dot)}
-                            ${renderSensor('Mira 2x', config.scope_2x)}
-                            ${renderSensor('Mira 4x', config.scope_4x)}
-                        </div>
-                    </div>
-
-                    <p class="text-sm italic text-gray-400 pt-2 border-t border-gray-700">Nota: ${config.note}</p>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html); 
-        }
-        
-        window.toggleRandomButton = (baseModel) => {
-            document.getElementById('randomGenerateButton').disabled = !baseModel;
-            document.getElementById('stableGenerateButton').disabled = !baseModel;
-        }
-
-        // --- LÓGICA DE MENÚS DESPLEGABLES EN CASCADA ---
-        const extractBaseModels = (data) => {
-            const brands = data.map(name => {
-                if (name.base_model.includes('Redmi') || name.base_model.includes('Poco') || name.base_model.includes('Xiaomi')) return 'Xiaomi / Redmi / Poco';
-                if (name.base_model.includes('Samsung Galaxy')) return 'Samsung Galaxy';
-                if (name.base_model.includes('iPhone')) return 'iPhone'; 
-                if (name.base_model.includes('Infinix')) return 'Infinix';
-                if (name.base_model.includes('Motorola')) return 'Motorola';
-                if (name.base_model.includes('Oppo')) return 'Oppo'; 
-                if (name.base_model.includes('Vivo')) return 'Vivo'; 
-                if (name.base_model.includes('Honor')) return 'Honor'; // Agregado Honor
-                return name.base_model.split(' ')[0]; 
-            });
-            return [...new Set(brands)].sort((a, b) => {
-                if (a === 'Xiaomi / Redmi / Poco') return -1;
-                if (b === 'Xiaomi / Redmi / Poco') return 1;
-                if (a === 'Samsung Galaxy') return -1;
-                if (b === 'Samsung Galaxy') return 1;
-                if (a === 'iPhone') return -1; 
-                if (b === 'iPhone') return 1;
-                return a.localeCompare(b);
-            });
-        };
-
-        const initializeSelectors = () => {
-            const brandSelect = document.getElementById('brandSelect');
-            // Limpia por si se inicializa dos veces
-            brandSelect.innerHTML = '<option value="">-- Selecciona la Marca --</option>'; 
-            
-            const brands = extractBaseModels(INITIAL_DATA); 
-            brands.forEach(brand => {
-                const option = document.createElement('option');
-                option.value = brand;
-                option.textContent = brand;
-                brandSelect.appendChild(option);
-            });
-        };
-
-        window.populateModels = () => {
-            const brandSelect = document.getElementById('brandSelect');
-            const modelSelect = document.getElementById('modelSelect');
-            const selectedBrand = brandSelect.value;
-
-            modelSelect.innerHTML = '<option value="">-- Selecciona el Modelo Específico --</option>';
-            modelSelect.disabled = true;
-            toggleRandomButton(false); 
-
-            if (!selectedBrand) return;
-
-            let filteredByBrand;
-            if (selectedBrand === 'Xiaomi / Redmi / Poco') {
-                filteredByBrand = INITIAL_DATA.filter(item => 
-                    item.base_model.includes('Redmi') || item.base_model.includes('Poco') || item.base_model.includes('Xiaomi')
-                );
-            } else if (selectedBrand === 'iPhone') {
-                 filteredByBrand = INITIAL_DATA.filter(item => 
-                    item.base_model.includes('iPhone')
-                );
-            } else if (selectedBrand === 'Oppo') { 
-                 filteredByBrand = INITIAL_DATA.filter(item => 
-                    item.base_model.includes('Oppo')
-                );
-            } else if (selectedBrand === 'Vivo') { 
-                 filteredByBrand = INITIAL_DATA.filter(item => 
-                    item.base_model.includes('Vivo')
-                );
-            } else if (selectedBrand === 'Honor') { // Manejo de la marca Honor
-                 filteredByBrand = INITIAL_DATA.filter(item => 
-                    item.base_model.includes('Honor')
-                );
-            } else {
-                filteredByBrand = INITIAL_DATA.filter(item => 
-                    item.base_model.includes(selectedBrand)
-                );
-            }
-            
-            const uniqueModels = [...new Set(filteredByBrand.map(item => item.base_model))].sort();
-
-            uniqueModels.forEach(model => {
-                const option = document.createElement('option');
-                option.value = model;
-                option.textContent = model;
-                modelSelect.appendChild(option);
-            });
-
-            modelSelect.disabled = false;
-        };
-        
-        window.searchSensitivity = () => {
-            const modelSelect = document.getElementById('modelSelect');
-            const input = modelSelect.value;
-            
-            toggleRandomButton(input);
-
-            if (!input) { 
-                document.getElementById('resultsContainer').innerHTML = `<p class="text-center text-yellow-400">Por favor, selecciona un modelo específico de la lista.</p>`;
-                return;
-            }
-
-            renderAllConfigs(input, 'Configuraciones Fijas');
-        }
-
-        const renderAllConfigs = (targetBaseModel, title) => {
-            const resultsContainer = document.getElementById('resultsContainer');
-            resultsContainer.innerHTML = ''; 
-            
-            const relevantConfigs = INITIAL_DATA.filter(device => 
-                device.base_model === targetBaseModel
-            );
-
-            const sortedConfigs = relevantConfigs.sort((a, b) => {
-                const order = { "ALTA": 1, "MEDIA": 2, "BAJA": 3 };
-                return (order[a.level] || 4) - (order[b.level] || 4);
-            });
-
-            resultsContainer.insertAdjacentHTML('afterbegin', `<h2 class="text-3xl font-extrabold text-white mb-6">${title} para: <span class="text-pink-400">${targetBaseModel}</span></h2>`);
-            
-            sortedConfigs.forEach(config => {
-                renderResult(config, resultsContainer);
-            });
-        }
-        
-        // --- FUNCIÓN DE UTILIDAD: Rango DPI (Android) ---
-        const getDpiRange = (baseDpi) => {
-            const base = typeof baseDpi === 'number' ? baseDpi : (parseInt(baseDpi.match(/\d+/)[0]) || 550);
-            return {
-                min: Math.max(380, base - 150), 
-                max: base + 50 
-            };
-        };
-
-        // --- FUNCIÓN 1: GENERACIÓN DINÁMICA SIN DPI (ESTABLE / DPI DE FÁBRICA FIJO) ---
-        window.generateStableSensitivity = () => {
-            const modelSelect = document.getElementById('modelSelect');
-            const targetBaseModel = modelSelect.value;
-            const resultsContainer = document.getElementById('resultsContainer');
-
-            if (!targetBaseModel) return;
-
-            const baseConfig = INITIAL_DATA.find(device => 
-                device.base_model === targetBaseModel && device.level === 'BAJA'
-            );
-
-            if (!baseConfig) {
-                 resultsContainer.innerHTML = `<p class="text-center text-red-400">No se encontró una configuración base SIN DPI (BAJA) para este modelo. Por favor, selecciona otro modelo.</p>`;
-                 return;
-            }
-
-            const dynamicConfig = {
-                base_model: targetBaseModel,
-                model: `Sensibilidad SIN DPI Generada (${targetBaseModel})`,
-                dpi: baseConfig.dpi, 
-                button: getRandomInt(45, 60), 
-                general: getRandomInt(90, 150), 
-                red_dot: getRandomInt(90, 150),
-                scope_2x: getRandomInt(90, 150),
-                scope_4x: getRandomInt(90, 140), 
-                method: "DINÁMICA SIN DPI (Fábrica)",
-                note: `¡CONFIGURACIÓN DINÁMICA GENERADA! Usa el DPI de fábrica (${baseConfig.dpi}) con sensibilidades aleatorias en un rango de control (Max 200).`,
-                has_dpi: baseConfig.has_dpi, 
-                level: 'DINAMICA_ESTABLE' 
-            };
-
-            resultsContainer.innerHTML = '';
-            resultsContainer.insertAdjacentHTML('afterbegin', `<h2 class="text-3xl font-extrabold text-white mb-6">Resultado SIN DPI Generado: <span class="text-green-400">${targetBaseModel}</span></h2>`);
-            renderResult(dynamicConfig, resultsContainer);
-        }
-
-        // --- FUNCIÓN 2: GENERACIÓN DINÁMICA CON DPI (COMPETITIVA / DPI PERSONALIZADO Y VARIABLE) ---
-        window.generateDpiSensitivity = () => {
-            const modelSelect = document.getElementById('modelSelect');
-            const targetBaseModel = modelSelect.value;
-            const resultsContainer = document.getElementById('resultsContainer');
-
-            if (!targetBaseModel) return;
-
-            let baseConfig = INITIAL_DATA.find(device => 
-                device.base_model === targetBaseModel && device.level === 'ALTA'
-            );
-            if (!baseConfig || String(baseConfig.dpi).toLowerCase().includes('default')) {
-                baseConfig = INITIAL_DATA.find(device => 
-                    device.base_model === targetBaseModel && device.level === 'MEDIA'
-                );
-            }
-            
-            if (!baseConfig || String(baseConfig.dpi).toLowerCase().includes('default')) {
-                 resultsContainer.innerHTML = `<p class="text-center text-red-400">No se encontró una configuración base CON DPI (MEDIA/ALTA) válida para este modelo. Prueba el modo SIN DPI.</p>`;
-                 return;
-            }
-
-            let generatedDpi;
-            let dpiNote;
-            
-            if (targetBaseModel.includes('iPhone')) {
-                generatedDpi = getRandomInt(100, 120);
-                dpiNote = `Cursor Deslizante variable (${generatedDpi}) y sensibilidades in-game aleatorias (Max 200).`;
-            } else {
-                const range = getDpiRange(baseConfig.dpi);
-                generatedDpi = getRandomInt(range.min, range.max);
-                dpiNote = `DPI competitivo (${generatedDpi}) con sensibilidades aleatorias de alta velocidad (Max 200).`;
-            }
-
-            const dynamicConfig = {
-                base_model: targetBaseModel,
-                model: `Sensibilidad CON DPI Generada (${targetBaseModel})`,
-                dpi: generatedDpi, 
-                button: getRandomInt(40, 55), 
-                general: getRandomInt(100, 200), 
-                red_dot: getRandomInt(100, 200),
-                scope_2x: getRandomInt(95, 180),
-                scope_4x: getRandomInt(90, 160),
-                method: "DINÁMICA CON DPI (Competitiva)",
-                note: `¡CONFIGURACIÓN DINÁMICA GENERADA! ${dpiNote}`,
-                has_dpi: true, 
-                level: 'DINAMICA_COMPETITIVA' 
-            };
-
-            resultsContainer.innerHTML = '';
-            resultsContainer.insertAdjacentHTML('afterbegin', `<h2 class="text-3xl font-extrabold text-white mb-6">Resultado CON DPI Generado: <span class="text-red-400">${targetBaseModel}</span></h2>`);
-            renderResult(dynamicConfig, resultsContainer);
-        }
-    </script>
+  </script>
 </body>
 </html>
-
-
-
