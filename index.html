@@ -14,7 +14,8 @@ body {
     padding: 0;
     background: #0a0a0a;
     color: #fff;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 canvas {
@@ -173,7 +174,6 @@ button.secondary:hover {
 
     <div class="hint">Escribe el modelo aquí — el sistema generará sensibilidades para ese modelo.</div>
 
-    <!-- NUEVO APARTADO DPI OPCIONAL -->
     <label>DPI (opcional)</label>
     <input id="dpiInput" placeholder="Ej: 420, 500, 960...">
 
@@ -229,7 +229,7 @@ function setMode(m) {
         "Modo actual: " + (mode === 'dpi' ? 'Con DPI' : 'Sin DPI');
 }
 
-// GENERAR SENSIBILIDAD
+// GENERAR
 function genLevel(level) {
     const brand = document.getElementById('brand').value.trim();
     const model = document.getElementById('model').value.trim();
@@ -257,10 +257,15 @@ function genLevel(level) {
 
     if (mode === "dpi") {
         if (dpiUser !== "") {
-            dpiDisplay = `DPI del usuario: ${dpiUser}`;
+            let dpiVal = parseInt(dpiUser);
+            if (brand.toLowerCase().includes("iphone") && dpiVal > 120) {
+                dpiVal = 120;
+                alert("En iPhone el máximo permitido es 120.");
+            }
+            dpiDisplay = `Cursor Deslizante: ${dpiVal}`;
         } else {
             if (brand.toLowerCase().includes("iphone")) {
-                dpiDisplay = `Cursor Deslizante: ${Math.floor(Math.random() * (120 - 80 + 1)) + 80}`;
+                dpiDisplay = `Cursor Deslizante: ${Math.floor(Math.random() * 121)}`;
             } else {
                 dpiDisplay = `DPI sugerido: ${Math.floor(Math.random() * 501) + 300}`;
             }
@@ -327,6 +332,22 @@ animate();
 window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+});
+
+// VALIDACIÓN MANUAL SOLO PARA IPHONE
+document.addEventListener("DOMContentLoaded", () => {
+    const dpiInput = document.getElementById("dpiInput");
+    const esIphone = /iPhone/i.test(navigator.userAgent);
+
+    if (esIphone && dpiInput) {
+        dpiInput.addEventListener("input", function () {
+            let valor = parseInt(this.value);
+            if (valor > 120) {
+                this.value = 120;
+                alert("En iPhone el máximo permitido es 120.");
+            }
+        });
+    }
 });
 </script>
 
