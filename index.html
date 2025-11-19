@@ -1,277 +1,334 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sensibilidades FABI ANALISTA</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sensibilidades FABI ANALISTA</title>
 
-    body {
-      font-family: 'Orbitron', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #0a0a0a;
-      color: #fff;
-      overflow: hidden;
-    }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 0;
-    }
+body {
+    font-family: 'Orbitron', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #0a0a0a;
+    color: #fff;
+    overflow: hidden;
+}
 
-    .container {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 30px 20px;
-    }
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
 
-    /* Neon Glow Animations */
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 10px #00aaff, 0 0 20px #00e0ff; }
-      50% { box-shadow: 0 0 20px #00e0ff, 0 0 40px #00aaff; }
-    }
+.container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 30px 20px;
+}
 
-    @keyframes glowText {
-      0%,100% { text-shadow: 0 0 8px #00aaff, 0 0 12px #00e0ff; }
-      50% { text-shadow: 0 0 12px #00e0ff, 0 0 20px #00aaff; }
-    }
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 10px #00aaff, 0 0 20px #00e0ff; }
+    50% { box-shadow: 0 0 20px #00e0ff, 0 0 40px #00aaff; }
+}
 
-    .card {
-      background: rgba(15, 15, 31, 0.9);
-      padding: 30px 35px;
-      border-radius: 25px;
-      max-width: 600px;
-      width: 100%;
-      border: 2px solid #00aaff;
-      animation: glow 2s infinite alternate;
-      box-shadow: 0 0 15px #00aaff;
-    }
+@keyframes glowText {
+    0%,100% { text-shadow: 0 0 8px #00aaff, 0 0 12px #00e0ff; }
+    50% { text-shadow: 0 0 12px #00e0ff, 0 0 20px #00aaff; }
+}
 
-    h2 {
-      text-align: center;
-      color: #00aaff;
-      text-transform: uppercase;
-      margin-bottom: 25px;
-      animation: glowText 2s infinite alternate;
-    }
+.card {
+    background: rgba(15, 15, 31, 0.9);
+    padding: 30px 35px;
+    border-radius: 25px;
+    max-width: 600px;
+    width: 100%;
+    border: 2px solid #00aaff;
+    animation: glow 2s infinite alternate;
+    box-shadow: 0 0 15px #00aaff;
+}
 
-    input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 2px solid #00aaff;
-      margin: 10px 0;
-      background: #0b0b1a;
-      color: #fff;
-      font-weight: bold;
-      font-size: 15px;
-      transition: 0.3s;
-    }
+h2 {
+    text-align: center;
+    color: #00aaff;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    animation: glowText 2s infinite alternate;
+}
 
-    input:focus {
-      border-color: #00e0ff;
-      box-shadow: 0 0 15px #00e0ff;
-      outline: none;
-    }
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid #00aaff;
+    margin: 10px 0;
+    background: #0b0b1a;
+    color: #fff;
+    font-weight: bold;
+    font-size: 15px;
+    transition: 0.3s;
+}
 
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: 2px solid #00aaff;
-      border-radius: 15px;
-      background: #0b0b1a;
-      color: #00aaff;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-      text-shadow: 0 0 4px #00aaff;
-    }
+input:focus {
+    border-color: #00e0ff;
+    box-shadow: 0 0 15px #00e0ff;
+    outline: none;
+}
 
-    button:hover {
-      color: #fff;
-      border-color: #00e0ff;
-      box-shadow: 0 0 20px #00e0ff, 0 0 30px #00aaff;
-      background: linear-gradient(90deg, #0b0b1a, #001f3f);
-    }
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 2px solid #00aaff;
+    border-radius: 15px;
+    background: #0b0b1a;
+    color: #00aaff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    text-shadow: 0 0 4px #00aaff;
+}
 
-    button.secondary { border-color: #ff0044; color: #ff0044; }
-    button.secondary:hover {
-      color: #fff;
-      border-color: #ff4477;
-      box-shadow: 0 0 20px #ff4477, 0 0 30px #ff0044;
-    }
+button:hover {
+    color: #fff;
+    border-color: #00e0ff;
+    box-shadow: 0 0 20px #00e0ff, 0 0 30px #00aaff;
+    background: linear-gradient(90deg, #0b0b1a, #001f3f);
+}
 
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .result {
-      margin-top: 20px;
-      background: #0b0b1a;
-      padding: 18px;
-      border-radius: 15px;
-      white-space: pre-line;
-      min-height: 130px;
-      border: 2px solid #00aaff;
-      box-shadow: 0 0 15px #00aaff;
-      font-weight: bold;
-      animation: glow 2s infinite alternate;
-    }
+button.secondary { 
+    border-color: #ff0044;
+    color: #ff0044;
+}
+button.secondary:hover {
+    color: #fff;
+    border-color: #ff4477;
+    box-shadow: 0 0 20px #ff4477, 0 0 30px #ff0044;
+}
 
-    .hint { color: #888; font-size: 13px; margin-bottom: 5px; }
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
 
-  </style>
+.result {
+    margin-top: 20px;
+    background: #0b0b1a;
+    padding: 18px;
+    border-radius: 15px;
+    white-space: pre-line;
+    min-height: 130px;
+    border: 2px solid #00aaff;
+    box-shadow: 0 0 15px #00aaff;
+    font-weight: bold;
+    animation: glow 2s infinite alternate;
+}
+
+.hint {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+</style>
 </head>
-<body>
-  <canvas id="bgCanvas"></canvas>
 
-  <div class="container">
-    <!-- LOGIN -->
-    <div class="card" id="loginCard">
-      <h2>LOGIN SENSIBILIDADES FABI ANALISTA</h2>
-      <label>Usuario</label>
-      <input type="text" id="username" placeholder="Usuario" />
-      <label>Contraseña</label>
-      <input type="password" id="password" placeholder="Contraseña" />
-      <button onclick="login()">Iniciar sesión</button>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div class="card" id="loginCard">
+    <h2>LOGIN SENSIBILIDADES FABI ANALISTA</h2>
+
+    <label>Usuario</label>
+    <input type="text" id="username" placeholder="Usuario" />
+
+    <label>Contraseña</label>
+    <input type="password" id="password" placeholder="Contraseña" />
+
+    <button onclick="login()">Iniciar sesión</button>
+</div>
+
+<!-- GENERADOR -->
+<div class="card" id="mainCard" style="display:none;">
+
+    <h2>SENSIBILIDADES FABI ANALISTA</h2>
+
+    <label>Marca</label>
+    <input id="brand" placeholder="Ej: iPhone, Xiaomi, etc.">
+
+    <label>Modelo (escribe cualquiera)</label>
+    <input id="model" placeholder="Ej: Redmi Note 10 Pro">
+
+    <div class="hint">Escribe el modelo aquí — el sistema generará sensibilidades para ese modelo.</div>
+
+    <!-- NUEVO APARTADO DPI OPCIONAL -->
+    <label>DPI (opcional)</label>
+    <input id="dpiInput" placeholder="Ej: 420, 500, 960...">
+
+    <div class="row">
+        <button onclick="setMode('dpi')">Con DPI</button>
+        <button onclick="setMode('nodpi')" class="secondary">Sin DPI</button>
     </div>
 
-    <!-- GENERADOR -->
-    <div class="card" id="mainCard" style="display:none;">
-      <h2>SENSIBILIDADES FABI ANALISTA</h2>
+    <p class="hint" id="modeHint">Modo actual: Sin DPI</p>
 
-      <label>Marca</label>
-      <input id="brand" placeholder="Ej: iPhone, Xiaomi, etc." />
-
-      <label>Modelo (escribe cualquiera)</label>
-      <input id="model" placeholder="Ej: Redmi Note 10 Pro" />
-      <div class="hint">Escribe el modelo aquí — el sistema generará sensibilidades para ese modelo.</div>
-
-      <div class="row">
-        <button onclick="setMode('dpi')" class="small">Con DPI</button>
-        <button onclick="setMode('nodpi')" class="small secondary">Sin DPI</button>
-      </div>
-      <p class="hint" id="modeHint">Modo actual: Sin DPI</p>
-
-      <div class="row" style="margin-top:12px;">
+    <div class="row" style="margin-top:12px;">
         <button onclick="genLevel('alta')">Generar ALTA</button>
         <button onclick="genLevel('media')" class="secondary">Generar MEDIA</button>
-      </div>
-      <div style="margin-top:10px;">
-        <button onclick="genLevel('baja')" class="small">Generar BAJA</button>
-      </div>
-
-      <div id="output" class="result">
-        Escribe el modelo y selecciona un modo (Con DPI / Sin DPI), luego pulsa una sensibilidad.
-      </div>
     </div>
-  </div>
 
-  <script>
-    // LOGIN con dos usuarios
-    function login() {
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value.trim();
-      if ((user === 'fabian' && pass === 'fabipro') || (user === 'samuel' && pass === 'samupro')) {
+    <div style="margin-top:10px;">
+        <button onclick="genLevel('baja')">Generar BAJA</button>
+    </div>
+
+    <div id="output" class="result">
+        Escribe el modelo y selecciona un modo (Con DPI / Sin DPI), luego pulsa una sensibilidad.
+    </div>
+</div>
+</div>
+
+<script>
+// LOGIN
+function login() {
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+
+    if (
+        (user === 'fabian' && pass === 'fabipro') ||
+        (user === 'samuel' && pass === 'samupro') ||
+        (user === 'derek' && pass === 'derekpro')
+    ) {
         document.getElementById('loginCard').style.display = 'none';
         document.getElementById('mainCard').style.display = 'block';
-      } else {
+    } else {
         alert('Usuario o contraseña incorrectos 😬');
-      }
+    }
+}
+
+function r() {
+    return Math.floor(Math.random() * 200) + 1;
+}
+
+let mode = 'nodpi';
+
+function setMode(m) {
+    mode = m === 'dpi' ? 'dpi' : 'nodpi';
+    document.getElementById('modeHint').innerText =
+        "Modo actual: " + (mode === 'dpi' ? 'Con DPI' : 'Sin DPI');
+}
+
+// GENERAR SENSIBILIDAD
+function genLevel(level) {
+    const brand = document.getElementById('brand').value.trim();
+    const model = document.getElementById('model').value.trim();
+    const dpiUser = document.getElementById('dpiInput').value.trim();
+
+    if (!model) {
+        alert("Escribe el modelo antes de generar sensibilidad.");
+        return;
     }
 
-    // Random 1-200
-    function r() { return Math.floor(Math.random() * 200) + 1; }
+    const factor =
+        level === 'alta' ? 1 :
+        level === 'media' ? 0.75 :
+        0.5;
 
-    let mode = 'nodpi';
-
-    function setMode(m) {
-      mode = m === 'dpi' ? 'dpi' : 'nodpi';
-      document.getElementById('modeHint').innerText = 'Modo actual: ' + (mode === 'dpi' ? 'Con DPI' : 'Sin DPI');
-      const out = document.getElementById('output');
-      out.innerText = `Modo seleccionado: ${mode === 'dpi' ? 'Con DPI' : 'Sin DPI'}\nEscribe el modelo y pulsa un botón de sensibilidad.`;
-    }
-
-    function genLevel(level) {
-      const brand = document.getElementById('brand').value.trim();
-      const model = document.getElementById('model').value.trim();
-      if (!model) { alert('Por favor escribe el modelo del teléfono antes de generar sensibilidad.'); return; }
-
-      const factor = level === 'alta' ? 1 : level === 'media' ? 0.75 : 0.5;
-
-      let sens = {
+    let sens = {
         general: Math.min(200, Math.floor(r() * factor)),
-        mira2:  Math.min(200, Math.floor(r() * factor)),
-        mira4:  Math.min(200, Math.floor(r() * factor)),
+        mira2: Math.min(200, Math.floor(r() * factor)),
+        mira4: Math.min(200, Math.floor(r() * factor)),
         puntoRojo: Math.min(200, Math.floor(r() * factor)),
         fireButton: Math.floor(Math.random() * (60 - 35 + 1)) + 35
-      };
+    };
 
-      let dpiDisplay = 'Sin DPI';
-      if (mode === 'dpi') {
-        if (brand.toLowerCase().includes('iphone')) {
-          dpiDisplay = `Cursor Deslizante: ${Math.floor(Math.random() * (120 - 80 + 1)) + 80}`;
+    let dpiDisplay = "Sin DPI";
+
+    if (mode === "dpi") {
+        if (dpiUser !== "") {
+            dpiDisplay = `DPI del usuario: ${dpiUser}`;
         } else {
-          dpiDisplay = `DPI: ${Math.floor(Math.random() * 501) + 300}`;
+            if (brand.toLowerCase().includes("iphone")) {
+                dpiDisplay = `Cursor Deslizante: ${Math.floor(Math.random() * (120 - 80 + 1)) + 80}`;
+            } else {
+                dpiDisplay = `DPI sugerido: ${Math.floor(Math.random() * 501) + 300}`;
+            }
         }
-      }
-
-      document.getElementById('output').innerText =
-        `📱 ${brand} - ${model}\n` +
-        `🔧 Modo: ${mode === 'dpi' ? 'Con DPI' : 'Sin DPI'}\n` +
-        `🎯 Nivel: ${level.toUpperCase()}\n\n` +
-        `General: ${sens.general}\n` +
-        `Punto Rojo: ${sens.puntoRojo}\n` +
-        `Mira 2x: ${sens.mira2}\n` +
-        `Mira 4x: ${sens.mira4}\n` +
-        `Tamaño botón de disparo: ${sens.fireButton}\n\n` +
-        `${dpiDisplay}`;
     }
 
-    // PARTÍCULAS NEON
-    const canvas = document.getElementById('bgCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    document.getElementById("output").innerText =
+`📱 ${brand} - ${model}
+🔧 Modo: ${mode === "dpi" ? "Con DPI" : "Sin DPI"}
+🎯 Nivel: ${level.toUpperCase()}
 
-    let particles = [];
-    for(let i=0;i<120;i++){
-      particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*2+1, dx:(Math.random()-0.5)*1, dy:(Math.random()-0.5)*1.5});
-    }
+• General: ${sens.general}
+• Punto Rojo: ${sens.puntoRojo}
+• Mira 2x: ${sens.mira2}
+• Mira 4x: ${sens.mira4}
+• Tamaño botón de disparo: ${sens.fireButton}
 
-    function animate(){
-      ctx.fillStyle = 'rgba(10,10,10,0.4)';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      particles.forEach(p=>{
+${dpiDisplay}`;
+}
+
+// PARTICULAS
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 120; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 1,
+        dx: (Math.random() - 0.5) * 1,
+        dy: (Math.random() - 0.5) * 1.5
+    });
+}
+
+function animate() {
+    ctx.fillStyle = "rgba(10,10,10,0.4)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
         ctx.beginPath();
-        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle = '#00aaff';
-        ctx.shadowColor = '#00e0ff';
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = "#00aaff";
+        ctx.shadowColor = "#00e0ff";
         ctx.shadowBlur = 8;
         ctx.fill();
-        p.x+=p.dx;
-        p.y+=p.dy;
-        if(p.x>canvas.width)p.x=0;
-        if(p.x<0)p.x=canvas.width;
-        if(p.y>canvas.height)p.y=0;
-        if(p.y<0)p.y=canvas.height;
-      });
-      requestAnimationFrame(animate);
-    }
-    animate();
 
-    window.addEventListener('resize', ()=>{
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if (p.x > canvas.width) p.x = 0;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.y > canvas.height) p.y = 0;
+        if (p.y < 0) p.y = canvas.height;
     });
 
-  </script>
+    requestAnimationFrame(animate);
+}
+animate();
+
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
 </body>
 </html>
